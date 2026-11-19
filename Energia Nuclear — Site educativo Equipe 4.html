@@ -1,0 +1,2213 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energia Nuclear — Site educativo Equipe 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Skip artifact shell — fixed styles served beside every artifact.
+   Tokens, utilities and components (basecoat 1.0 markup, no CDN); artifacts
+   override --accent for their own identity. */
+:root {
+  color-scheme: light dark;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-text: color-mix(in srgb, var(--accent) 72%, #000);
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --text: #14171f;
+  --text-muted: #5b6472;
+  --border: rgba(20, 23, 31, 0.10);
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 23, 31, 0.08);
+  --space: 16px;
+  --success: #0a7a35;
+  --danger: #c0262d;
+  --warning: #8a5300;
+}
+/* Theme resolution. Without data-theme the viewer's system preference decides,
+   as it always did. With it, the artifact's own choice wins in BOTH directions:
+   a page that hardcodes one palette must not be handed the opposite set of
+   tokens by the machine it happens to be opened on. The dark values appear
+   twice because a media query cannot be folded into a selector list.
+   The attribute sits inside :where() so these blocks keep the specificity of a
+   bare :root — the page's own <style> is linked after this file and must go on
+   overriding any token it wants, exactly as it could before. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+    --bg: #101318;
+    --surface: #181c23;
+    --text: #eef1f6;
+    --text-muted: #9aa4b2;
+    --border: rgba(238, 241, 246, 0.12);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --success: #4ade80;
+    --danger: #f87171;
+    --warning: #fbbf24;
+  }
+}
+:root:where([data-theme="dark"]) {
+  color-scheme: dark;
+  --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+  --bg: #101318;
+  --surface: #181c23;
+  --text: #eef1f6;
+  --text-muted: #9aa4b2;
+  --border: rgba(238, 241, 246, 0.12);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --success: #4ade80;
+  --danger: #f87171;
+  --warning: #fbbf24;
+}
+:root:where([data-theme="light"]) { color-scheme: light; }
+/* Pages generated before the shell had its own components still link the
+   basecoat CDN, which reads its own tokens and switches theme only on a
+   .dark class. Bridged to the shell's, whatever of it those pages use takes
+   the page's accent and follows the declared theme. Its --accent token is a
+   hover tint, renamed in its theme as --color-accent; the shell's --accent is
+   the brand colour, so the tint is derived from it here. */
+:root {
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--accent);
+  --primary-foreground: var(--accent-contrast);
+  --secondary: color-mix(in srgb, var(--text) 7%, var(--surface));
+  --secondary-foreground: var(--text);
+  --muted: color-mix(in srgb, var(--text) 5%, var(--surface));
+  --muted-foreground: var(--text-muted);
+  --color-accent: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  --color-accent-foreground: var(--text);
+  --destructive: var(--danger);
+  --input: var(--border);
+  --ring: var(--accent);
+}
+* { box-sizing: border-box; }
+/* The reset the pages were written against: they all linked basecoat, which
+   ships Tailwind's. Its components now live here, so the reset does too. */
+*, ::before, ::after, ::backdrop { margin: 0; padding: 0; border: 0 solid; }
+/* Preflight's rule too: without it a component class that sets display
+   (.alert, .card, .btn…) beats the hidden attribute and shows the element. */
+[hidden]:where(:not([hidden="until-found"])) { display: none !important; }
+.hidden { display: none !important; }
+h1, h2, h3, h4, h5, h6 { font-size: inherit; font-weight: inherit; }
+a { color: inherit; text-decoration: inherit; }
+b, strong { font-weight: bolder; }
+ol, ul, menu { list-style: none; }
+svg, video, canvas, iframe { display: block; vertical-align: middle; }
+button, input, select, textarea { color: inherit; background-color: transparent; border-radius: 0; }
+table { border-collapse: collapse; }
+hr { height: 0; color: inherit; border-top-width: 1px; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+
+.shell-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.shell-section { padding: calc(var(--space) * 2) 0; }
+.shell-grid { display: grid; gap: var(--space); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.shell-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--space); }
+.shell-footer { padding: 24px 0 40px; color: var(--text-muted); font-size: 13px; }
+
+.shell-hero { padding: calc(var(--space) * 3) 0 calc(var(--space) * 2); }
+.shell-hero h1 { font-size: clamp(26px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+.shell-hero p { color: var(--text-muted); max-width: 60ch; margin: 0; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space);
+}
+
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .kpi-value { font-size: clamp(22px, 2.3vw, 28px); font-weight: 650; line-height: 1.1; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.kpi .kpi-label { font-size: 13px; color: var(--text-muted); }
+.kpi .kpi-delta { font-size: 12.5px; font-weight: 600; }
+.kpi .kpi-delta.up { color: var(--success); }
+.kpi .kpi-delta.down { color: var(--danger); }
+
+table.shell-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+table.shell-table th {
+  text-align: left; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600;
+}
+table.shell-table th, table.shell-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--border); }
+table.shell-table td.num, table.shell-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+
+.chart-box { width: 100%; min-height: 220px; }
+.chart-box svg { width: 100%; height: auto; display: block; }
+.chart-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; margin-top: 12px; font-size: 12.5px; color: var(--text-muted); }
+.chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.chart-legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.chart-legend b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.muted { color: var(--text-muted); }
+.accent { color: var(--accent-text); }
+.shell-badge, .eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent-text);
+}
+/* A pill keeps its content width inside flex and grid columns, which would
+   otherwise stretch it across the card; a centred parent still centres it. */
+.shell-badge, .eyebrow, .badge { width: fit-content; max-width: 100%; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell-fade { animation: shell-fade 400ms ease both; }
+  @keyframes shell-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+
+/* Layout and type utilities: what the pages kept spelling in style="".
+   Spacing and type sizes follow Tailwind's scale; there is no Tailwind. */
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.stack { display: flex; flex-direction: column; gap: var(--space); }
+.between { justify-content: space-between; }
+.grow { flex: 1 1 0; min-width: 0; }
+.cols-2, .cols-3, .cols-4, .cols-5 { display: grid; gap: var(--space); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 720px) {
+  .cols-2, .cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cols-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1000px) { .cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.gap-1 { gap: 4px; } .gap-2 { gap: 8px; } .gap-3 { gap: 12px; } .gap-4 { gap: 16px; } .gap-6 { gap: 24px; }
+.m-0 { margin: 0; }
+.mt-1 { margin-top: 4px; } .mt-2 { margin-top: 8px; } .mt-3 { margin-top: 12px; } .mt-4 { margin-top: 16px; } .mt-6 { margin-top: 24px; }
+.mb-1 { margin-bottom: 4px; } .mb-2 { margin-bottom: 8px; } .mb-3 { margin-bottom: 12px; } .mb-4 { margin-bottom: 16px; } .mb-6 { margin-bottom: 24px; }
+.p-2 { padding: 8px; } .p-3 { padding: 12px; } .p-4 { padding: 16px; } .p-6 { padding: 24px; }
+.text-xs { font-size: 12px; } .text-sm { font-size: 14px; } .text-base { font-size: 16px; }
+.text-lg { font-size: 18px; } .text-xl { font-size: 20px; line-height: 1.35; }
+.text-2xl { font-size: 24px; line-height: 1.25; } .text-3xl { font-size: 30px; line-height: 1.2; }
+.font-medium { font-weight: 500; } .font-semibold { font-weight: 600; } .font-bold { font-weight: 700; }
+.text-right { text-align: right; } .text-center { text-align: center; }
+.nowrap { white-space: nowrap; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric: tabular-nums; }
+.w-full { width: 100%; }
+.text-success { color: var(--success); } .text-danger { color: var(--danger); } .text-warning { color: var(--warning); }
+
+/* Components, with basecoat 1.0 markup (variants and sizes are data
+   attributes) and the shell tokens, so a page needs neither component CSS
+   nor a CSS framework. An older page that also links basecoat gets these
+   rules after it, over the same properties. */
+button, input, select, textarea { font: inherit; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 36px; padding: 0 14px; border: 1px solid transparent; border-radius: calc(var(--radius) - 2px);
+  background: var(--accent); color: var(--accent-contrast);
+  font-size: 14px; font-weight: 500; line-height: 1; white-space: nowrap; text-decoration: none; cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.btn:hover { background: color-mix(in srgb, var(--accent) 86%, #000); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
+.btn[data-variant="secondary"] { background: color-mix(in srgb, var(--text) 8%, var(--surface)); color: var(--text); }
+.btn[data-variant="secondary"]:hover { background: color-mix(in srgb, var(--text) 14%, var(--surface)); }
+.btn[data-variant="outline"] { background: var(--surface); color: var(--text); border-color: var(--border); }
+.btn[data-variant="ghost"] { background: transparent; color: var(--text); }
+.btn[data-variant="outline"]:hover, .btn[data-variant="ghost"]:hover { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.btn[data-variant="destructive"] { background: var(--danger); color: var(--bg); }
+.btn[data-variant="destructive"]:hover { background: color-mix(in srgb, var(--danger) 86%, var(--text)); }
+.btn[data-variant="link"] { height: auto; padding: 0; background: none; color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; }
+.btn[data-size="sm"] { height: 30px; padding: 0 10px; font-size: 13px; }
+.btn[data-size="lg"] { height: 42px; padding: 0 20px; font-size: 15px; }
+.btn[data-size="icon"] { width: 36px; padding: 0; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px;
+  border: 1px solid transparent; border-radius: 999px; background: var(--accent); color: var(--accent-contrast);
+  font-size: 12px; font-weight: 600; line-height: 1.5; white-space: nowrap;
+}
+.badge[data-variant="secondary"] { background: color-mix(in srgb, var(--text) 8%, var(--surface)); color: var(--text); }
+.badge[data-variant="outline"] { background: transparent; color: var(--text); border-color: var(--border); }
+.badge[data-variant="destructive"] { background: color-mix(in srgb, var(--danger) 14%, var(--surface)); color: var(--danger); }
+
+.alert {
+  display: grid; gap: 4px; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); color: var(--text); font-size: 14px;
+}
+.alert h2, .alert h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.alert p, .alert section { margin: 0; color: var(--text-muted); }
+.alert[data-variant="destructive"] { border-color: color-mix(in srgb, var(--danger) 45%, var(--border)); background: color-mix(in srgb, var(--danger) 7%, var(--surface)); color: var(--danger); }
+
+.card {
+  display: flex; flex-direction: column; gap: 16px; padding: 20px 0;
+  border: 1px solid var(--border); border-radius: calc(var(--radius) + 2px);
+  background: var(--surface); color: var(--text); box-shadow: var(--shadow);
+}
+.card > header, .card > section, .card > footer { padding: 0 20px; }
+.card > header { display: grid; gap: 4px; }
+.card > header h2, .card > header h3 { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.3; }
+.card > header p { margin: 0; color: var(--text-muted); font-size: 14px; }
+.card > footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+.input {
+  width: 100%; min-height: 36px; padding: 6px 12px; border: 1px solid var(--border); border-radius: calc(var(--radius) - 2px);
+  background: var(--surface); color: var(--text); font-size: 14px;
+}
+textarea.input { min-height: 84px; resize: vertical; }
+.input::placeholder { color: var(--text-muted); }
+.input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+.field { display: grid; gap: 6px; }
+.field label { font-size: 14px; font-weight: 500; }
+.field [role="alert"] { color: var(--danger); font-size: 13px; }
+
+dialog.dialog {
+  width: min(520px, calc(100vw - 32px)); max-height: calc(100vh - 32px); margin: auto; padding: 0;
+  border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px);
+  background: var(--surface); color: var(--text); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+dialog.dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+dialog.dialog > div { display: grid; gap: 16px; padding: 24px; }
+dialog.dialog header { display: grid; gap: 4px; }
+dialog.dialog header h2 { margin: 0; font-size: 18px; font-weight: 600; }
+dialog.dialog header p { margin: 0; color: var(--text-muted); font-size: 14px; }
+dialog.dialog footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+
+.tabs { display: grid; gap: 12px; }
+.tabs > [role="tablist"] {
+  display: inline-flex; gap: 4px; width: fit-content; max-width: 100%; padding: 4px; overflow-x: auto;
+  border-radius: var(--radius); background: color-mix(in srgb, var(--text) 6%, var(--surface));
+}
+.tabs [role="tab"] {
+  padding: 6px 12px; border: 0; border-radius: calc(var(--radius) - 4px); background: transparent;
+  color: var(--text-muted); font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer;
+}
+.tabs [role="tab"][aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.tabs [role="tabpanel"][hidden] { display: none; }
+
+.accordion > details { border-bottom: 1px solid var(--border); }
+.accordion > details > summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 0; font-weight: 500; list-style: none; cursor: pointer;
+}
+.accordion > details > summary::-webkit-details-marker { display: none; }
+.accordion > details > summary::after { content: "+"; color: var(--text-muted); font-size: 18px; line-height: 1; }
+.accordion > details[open] > summary::after { content: "\2212"; }
+.accordion > details > :not(summary) { margin: 0 0 14px; color: var(--text-muted); }
+
+.toaster {
+  position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; flex-direction: column-reverse; gap: 8px;
+  width: min(360px, calc(100vw - 32px)); pointer-events: none;
+}
+.toaster .toast { pointer-events: auto; transition: opacity 200ms ease, transform 200ms ease; }
+.toaster .toast[aria-hidden="true"] { opacity: 0; transform: translateY(8px); }
+.toaster .toast-content {
+  padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); color: var(--text); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); font-size: 13px;
+}
+.toaster .toast-content h2 { margin: 0 0 2px; font-size: 14px; font-weight: 600; }
+.toaster .toast-content p { margin: 0; color: var(--text-muted); }
+
+/* skipUI building blocks. */
+.skip-table-search { max-width: 320px; margin-bottom: 12px; }
+.skip-table-wrap { overflow-x: auto; }
+table.shell-table th[data-sort] { cursor: pointer; user-select: none; }
+table.shell-table th[aria-sort="ascending"]::after { content: " \25B2"; font-size: 9px; }
+table.shell-table th[aria-sort="descending"]::after { content: " \25BC"; font-size: 9px; }
+table.shell-table td.skip-table-empty { color: var(--text-muted); text-align: center; padding: 24px 0; }
+.skip-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; font-size: 13px; color: var(--text-muted); }
+.toaster .toast[data-type="success"] .toast-content { border-left: 3px solid var(--success); }
+.toaster .toast[data-type="error"] .toast-content { border-left: 3px solid var(--danger); }
+
+</style>
+<script>
+/* Skip artifact shell — fixed helpers served beside every artifact. */
+(function () {
+  "use strict";
+
+  var fmt = {
+    num: function (v, opts) { return new Intl.NumberFormat("pt-BR", opts || {}).format(v); },
+    brl: function (v) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v); },
+    pct: function (v) { return new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 }).format(v); },
+    compact: function (v) { return new Intl.NumberFormat("pt-BR", { notation: "compact", maximumFractionDigits: 1 }).format(v); },
+    brlCompact: function (v) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", notation: "compact", maximumFractionDigits: 1 }).format(v); }
+  };
+
+  // axisLabels formats the five y-axis ticks in the unit the chart declared
+  // (percent, BRL or plain numbers), compact so long values never clip, with
+  // the fewest decimals that still print every tick exactly (1,5 mi, not 2 mi).
+  function axisLabels(format, ticks) {
+    function at(digits) {
+      var opts = { notation: "compact", maximumFractionDigits: digits };
+      if (format === "pct") opts = { style: "percent", maximumFractionDigits: digits };
+      else if (format === "brl") opts = { style: "currency", currency: "BRL", notation: "compact", maximumFractionDigits: digits };
+      var nf = new Intl.NumberFormat("pt-BR", opts);
+      return ticks.map(function (t) { return nf.format(t); });
+    }
+    for (var digits = 0; digits < 2; digits++) {
+      if (at(digits).join("|") === at(digits + 1).join("|")) return at(digits);
+    }
+    return at(2);
+  }
+
+  // yAxisPad formats the ticks and measures the left padding they need from
+  // the longest one; drawYAxis then draws the grid and the labels.
+  function yAxisPad(format, max) {
+    var labels = axisLabels(format, [0, max / 4, max / 2, (max * 3) / 4, max]);
+    var longest = labels.reduce(function (m, l) { return Math.max(m, l.length); }, 0);
+    return { labels: labels, padL: Math.max(40, Math.round(longest * 6.2) + 14) };
+  }
+  function drawYAxis(svg, axis, W, padR, padT, plotH) {
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: axis.padL, y1: gy, x2: W - padR, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: axis.padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axis.labels[g];
+      svg.appendChild(lbl);
+    }
+  }
+
+  // xLabelStep: show every k-th category label so labels never overlap, and
+  // always the last one (counted back from the end).
+  function xLabelStep(labels, step) {
+    var longest = labels.reduce(function (m, l) { return Math.max(m, String(l).length); }, 0);
+    return Math.max(1, Math.ceil((longest * 6.4 + 8) / Math.max(step, 1)));
+  }
+  function drawXLabel(svg, text, x, y, W, edgeGuard) {
+    var anchor = "middle";
+    var half = String(text).length * 3.2;
+    if (edgeGuard && x - half < 4) anchor = "start";
+    if (edgeGuard && x + half > W - 4) anchor = "end";
+    var tx = svgEl("text", { x: x, y: y, "text-anchor": anchor, "font-size": 11, fill: mutedColor() });
+    tx.textContent = text;
+    svg.appendChild(tx);
+  }
+  // categoryLines fits a bar's category name in its slot: one line, two lines
+  // split at a space, or cut with "…". A bar without its name can't be read, so
+  // categories are never skipped; null when the slot is too narrow for that.
+  function categoryLines(text, slot) {
+    var fit = Math.floor((slot - 6) / 6.4);
+    var s = String(text);
+    if (fit < 4) return null;
+    if (s.length <= fit) return [s];
+    var cut = function (t) { return t.length <= fit ? t : t.slice(0, fit - 1).trimEnd() + "…"; };
+    var best = -1;
+    for (var i = 0; i < s.length; i++) {
+      if (s[i] === " " && (best < 0 || Math.abs(s.length / 2 - i) < Math.abs(s.length / 2 - best))) best = i;
+    }
+    if (best < 0) return [cut(s)];
+    return [cut(s.slice(0, best)), cut(s.slice(best + 1))];
+  }
+  function legend(el, items) {
+    var box = document.createElement("div");
+    box.className = "chart-legend";
+    items.forEach(function (it) {
+      var row = document.createElement("span");
+      var dot = document.createElement("i");
+      dot.style.background = it.color;
+      row.appendChild(dot);
+      row.appendChild(document.createTextNode((it.label || "") + (it.value ? " " : "")));
+      if (it.value) {
+        var v = document.createElement("b");
+        v.textContent = it.value;
+        row.appendChild(v);
+      }
+      box.appendChild(row);
+    });
+    resolve(el).appendChild(box);
+  }
+  var seriesPalette = ["#1baf7a", "#eda100", "#e34948", "#4a3aa7", "#e87ba4", "#0ea5b7"];
+
+  // format accepts a function OR one of the fmt names ("num" | "brl" | "pct").
+  // A page's function may return nothing or throw: the chart prints its
+  // number instead of taking the rest of the page script down with it.
+  function coerceFormat(spec) {
+    if (typeof spec === "function") {
+      return function (v) {
+        try {
+          var out = spec(v);
+          return out == null ? "" : String(out);
+        } catch (e) {
+          return fmt.num(v);
+        }
+      };
+    }
+    if (typeof spec === "string" && fmt[spec]) return fmt[spec];
+    return function (v) { return fmt.num(v); };
+  }
+
+  function accent() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2563eb";
+  }
+  function mutedColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--text-muted").trim() || "#5b6472";
+  }
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function frame(el, w, h) {
+    var svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, role: "img" });
+    el = resolve(el);
+    el.innerHTML = "";
+    el.appendChild(svg);
+    return svg;
+  }
+
+  // maxOf guards the axis scale: empty values would give -Infinity (truthy,
+  // so "|| 1" can't catch it) and a non-positive max would flip the chart.
+  // finite reads a chart value as a number, 0 when it is not one (NaN,
+  // Infinity, a stray string), so one bad value cannot blank the axis.
+  function finite(v) {
+    var n = +v;
+    return isFinite(n) ? n : 0;
+  }
+
+  function maxOf(values) {
+    var m = values.length ? Math.max.apply(null, values.map(finite)) : 0;
+    return m > 0 ? m : 1;
+  }
+
+  // labelsFor pads or trims the category names to the n points drawn: pages
+  // pass labels and values of different lengths, and one throw here loses
+  // every section the page renders after the chart.
+  function labelsFor(cfg, n) {
+    var out = [];
+    for (var i = 0; i < n; i++) out.push(cfg.labels && cfg.labels[i] != null ? String(cfg.labels[i]) : "");
+    return out;
+  }
+
+  // niceMax rounds the scale up so the four grid steps land on round values
+  // (1, 1.5, 2, 2.5, 3, 4, 5, 6 or 8 × 10^k) and the tick labels read exactly.
+  function niceMax(max) {
+    var raw = max / 4;
+    var mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    var res = raw / mag;
+    var steps = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+    var nice = steps.filter(function (s) { return s >= res - 1e-9; })[0];
+    return nice * mag * 4;
+  }
+
+  // bar(el, {labels:[], values:[], color?, format?}) — vertical bar chart.
+  function bar(el, cfg) {
+    var W = 640, H = 280, padB = 30, padT = 12, padR = 12;
+    var max = niceMax(maxOf(cfg.values));
+    var axis = yAxisPad(cfg.format, max);
+    var svg = frame(el, W, H);
+    var n = cfg.values.length;
+    var labels = labelsFor(cfg, n);
+    var plotW = W - axis.padL - padR;
+    var step = plotW / n, bw = Math.min(step * 0.62, 64);
+    var names = labels.map(function (l) { return categoryLines(l, step); });
+    var named = names.every(Boolean);
+    if (named && names.some(function (l) { return l.length > 1; })) padB = 42;
+    var plotH = H - padT - padB;
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    var every = xLabelStep(labels, step);
+    drawYAxis(svg, axis, W, padR, padT, plotH);
+    cfg.values.forEach(function (v, i) {
+      var bh = Math.max(0, (finite(v) / max) * plotH);
+      var x = axis.padL + i * step + (step - bw) / 2;
+      var y = padT + plotH - bh;
+      var r = svgEl("rect", { x: x, y: y, width: bw, height: bh, rx: 4, fill: (cfg.colors && cfg.colors[i]) || color });
+      var t = svgEl("title", {});
+      t.textContent = labels[i] + ": " + f(v);
+      r.appendChild(t);
+      svg.appendChild(r);
+      if (named) {
+        names[i].forEach(function (text, li) {
+          drawXLabel(svg, text, x + bw / 2, padT + plotH + 18 + li * 13, W, false);
+        });
+      } else if ((n - 1 - i) % every === 0) {
+        drawXLabel(svg, labels[i], x + bw / 2, H - 10, W, false);
+      }
+    });
+  }
+
+  // line(el, {labels:[], values:[] | series:[{label, values, color?}], color?, format?})
+  // — one line, or several series on one scale with a legend under the chart.
+  function line(el, cfg) {
+    var W = 640, H = 280, padB = 30, padT = 12, padR = 16;
+    var series = cfg.series && cfg.series.length
+      ? cfg.series
+      : [{ label: "", values: cfg.values || [], color: cfg.color }];
+    var all = [];
+    series.forEach(function (s) { all = all.concat(s.values || []); });
+    var max = niceMax(maxOf(all));
+    var axis = yAxisPad(cfg.format, max);
+    var svg = frame(el, W, H);
+    var n = series.reduce(function (m, s) { return Math.max(m, (s.values || []).length); }, 0);
+    var labels = labelsFor(cfg, n);
+    var plotW = W - axis.padL - padR, plotH = H - padT - padB;
+    var f = coerceFormat(cfg.format);
+    drawYAxis(svg, axis, W, padR, padT, plotH);
+    var xs = labels.map(function (_, i) { return axis.padL + (n === 1 ? plotW / 2 : (plotW * i) / (n - 1)); });
+    var every = xLabelStep(labels, n > 1 ? plotW / (n - 1) : plotW);
+    labels.forEach(function (label, i) {
+      if ((n - 1 - i) % every === 0) drawXLabel(svg, label, xs[i], H - 10, W, true);
+    });
+    var colors = series.map(function (s, si) {
+      return s.color || (si === 0 ? (cfg.color || accent()) : seriesPalette[(si - 1) % seriesPalette.length]);
+    });
+    series.forEach(function (s, si) {
+      var color = colors[si];
+      var pts = (s.values || []).map(function (v, i) { return [xs[i], padT + plotH - (finite(v) / max) * plotH]; });
+      var d = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+      svg.appendChild(svgEl("path", { d: d, fill: "none", stroke: color, "stroke-width": 2, "stroke-linejoin": "round" }));
+      pts.forEach(function (p, i) {
+        var c = svgEl("circle", { cx: p[0], cy: p[1], r: 3.5, fill: color });
+        var t = svgEl("title", {});
+        t.textContent = (s.label ? s.label + " · " : "") + labels[i] + ": " + f(s.values[i]);
+        c.appendChild(t);
+        svg.appendChild(c);
+      });
+    });
+    if (series.length > 1) {
+      legend(el, series.map(function (s, si) { return { label: s.label, color: colors[si] }; }));
+    }
+  }
+
+  // donut(el, {labels:[], values:[], colors?, format?, center?, centerLabel?, legend?})
+  // — donut with a short total in the centre (compact, in the declared unit)
+  // and, with legend: true, the labels and shares listed under it.
+  function donut(el, cfg) {
+    var W = 320, H = 280, cx = W / 2, cy = H / 2, R = 92, r = 58;
+    var svg = frame(el, W, H);
+    // At 100% of a wide container the donut outgrows the height pages give
+    // the box and spills over the next section: keep it at its own size.
+    svg.style.maxWidth = W + "px";
+    svg.style.margin = "0 auto";
+    var values = cfg.values.map(finite);
+    var labels = labelsFor(cfg, values.length);
+    var sum = values.reduce(function (a, b) { return a + b; }, 0);
+    var total = sum || 1;
+    var palette = cfg.colors || [accent()].concat(seriesPalette);
+    // The hover keeps the full value; the centre has room for a short one.
+    var full = coerceFormat(cfg.format);
+    var short = typeof cfg.format === "function" ? full : cfg.format === "brl" ? fmt.brlCompact : fmt.compact;
+    var a0 = -Math.PI / 2;
+    values.forEach(function (v, i) {
+      var a1 = a0 + (v / total) * Math.PI * 2;
+      var large = a1 - a0 > Math.PI ? 1 : 0;
+      var p = ["M", cx + R * Math.cos(a0), cy + R * Math.sin(a0),
+        "A", R, R, 0, large, 1, cx + R * Math.cos(a1), cy + R * Math.sin(a1),
+        "L", cx + r * Math.cos(a1), cy + r * Math.sin(a1),
+        "A", r, r, 0, large, 0, cx + r * Math.cos(a0), cy + r * Math.sin(a0), "Z"].join(" ");
+      var path = svgEl("path", { d: p, fill: palette[i % palette.length] });
+      var t = svgEl("title", {});
+      t.textContent = labels[i] + ": " + full(v) + " (" + fmt.pct(v / total) + ")";
+      path.appendChild(t);
+      svg.appendChild(path);
+      a0 = a1;
+    });
+    // A share chart has no total worth printing: without its own centre text
+    // the caption alone takes the middle.
+    var text = cfg.center != null ? String(cfg.center) : (cfg.format === "pct" ? "" : short(sum));
+    if (text) {
+      var size = text.length > 9 ? 14 : text.length > 7 ? 17 : 20;
+      var center = svgEl("text", { x: cx, y: cfg.centerLabel ? cy + 1 : cy + 6, "text-anchor": "middle", "font-size": size, "font-weight": 650, fill: "currentColor" });
+      center.textContent = text;
+      svg.appendChild(center);
+    }
+    if (cfg.centerLabel) {
+      var cap = svgEl("text", { x: cx, y: text ? cy + 19 : cy + 5, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      cap.textContent = cfg.centerLabel;
+      svg.appendChild(cap);
+    }
+    if (cfg.legend) {
+      legend(el, labels.map(function (label, i) {
+        return { label: label, color: palette[i % palette.length], value: fmt.pct(values[i] / total) };
+      }));
+    }
+  }
+
+  // ---- Page building blocks: what dashboards and small systems kept
+  // re-implementing — a searchable sortable table, a KPI row, tabs, toasts,
+  // dialogs, saved state and mock data. Every call is opt-in, so a page that
+  // brings its own versions keeps them.
+
+  function resolve(target) {
+    return typeof target === "string" ? document.querySelector(target) : target;
+  }
+
+  function node(tag, className, text) {
+    var el = document.createElement(tag);
+    if (className) el.className = className;
+    if (text != null) el.textContent = text;
+    return el;
+  }
+
+  function isNumberColumn(col) {
+    return col.align === "right" || col.format === "num" || col.format === "brl" || col.format === "pct";
+  }
+
+  function cellText(col, row) {
+    var value = row[col.key];
+    if (value == null) return "";
+    return col.format ? coerceFormat(col.format)(value) : String(value);
+  }
+
+  function compareValues(a, b) {
+    if (typeof a === "number" && typeof b === "number") return a - b;
+    return String(a == null ? "" : a).localeCompare(String(b == null ? "" : b), "pt-BR", { numeric: true });
+  }
+
+  // table(el, {columns, rows, search?, pageSize?, empty?, onRowClick?}) — a
+  // table.shell-table with sortable headers, an optional search box and
+  // pager. A column is {key, label, format?, align?, sortable? (true),
+  // render?(value, row) returning a Node or an HTML string — the page writes
+  // its cell templates as markup}. Plain values are always set as text.
+  // Returns {setRows, rows}.
+  function table(target, cfg) {
+    var root = resolve(target);
+    var cols = cfg.columns || [];
+    var pageSize = cfg.pageSize || 0;
+    var state = { rows: (cfg.rows || []).slice(), query: "", key: null, dir: 1, page: 0 };
+    root.innerHTML = "";
+    if (cfg.search) {
+      var search = node("input", "input skip-table-search");
+      search.type = "search";
+      search.placeholder = typeof cfg.search === "string" ? cfg.search : "Buscar…";
+      search.setAttribute("aria-label", search.placeholder);
+      search.addEventListener("input", function () {
+        state.query = search.value.trim().toLowerCase();
+        state.page = 0;
+        draw();
+      });
+      root.appendChild(search);
+    }
+    var tableEl = node("table", "shell-table");
+    var headRow = node("tr");
+    var heads = cols.map(function (col) {
+      var th = node("th", isNumberColumn(col) ? "num" : "", col.label == null ? col.key : col.label);
+      th.scope = "col";
+      if (col.sortable !== false) {
+        var toggle = function () {
+          state.dir = state.key === col.key ? -state.dir : 1;
+          state.key = col.key;
+          draw();
+        };
+        th.setAttribute("data-sort", col.key);
+        th.tabIndex = 0;
+        th.addEventListener("click", toggle);
+        th.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+        });
+      }
+      headRow.appendChild(th);
+      return th;
+    });
+    var thead = node("thead");
+    var tbody = node("tbody");
+    var wrap = node("div", "skip-table-wrap");
+    var pager = node("div", "skip-pager");
+    thead.appendChild(headRow);
+    tableEl.appendChild(thead);
+    tableEl.appendChild(tbody);
+    wrap.appendChild(tableEl);
+    root.appendChild(wrap);
+    if (pageSize) root.appendChild(pager);
+
+    function visibleRows() {
+      var rows = state.rows;
+      if (state.query) {
+        rows = rows.filter(function (row) {
+          return cols.some(function (col) { return cellText(col, row).toLowerCase().indexOf(state.query) >= 0; });
+        });
+      }
+      if (state.key) {
+        var key = state.key, dir = state.dir;
+        rows = rows.slice().sort(function (a, b) { return dir * compareValues(a[key], b[key]); });
+      }
+      return rows;
+    }
+
+    function drawRow(row) {
+      var tr = node("tr");
+      cols.forEach(function (col) {
+        var td = node("td", isNumberColumn(col) ? "num" : "");
+        if (!col.render) {
+          td.textContent = cellText(col, row);
+        } else {
+          var content = col.render(row[col.key], row);
+          if (content instanceof Node) td.appendChild(content);
+          else td.innerHTML = content == null ? "" : String(content);
+        }
+        tr.appendChild(td);
+      });
+      // The row stays a row (no role) and takes focus, so a keyboard reaches
+      // the same action; keys pressed on a control inside a cell are its own.
+      if (cfg.onRowClick) {
+        tr.style.cursor = "pointer";
+        tr.tabIndex = 0;
+        tr.addEventListener("click", function () { cfg.onRowClick(row); });
+        tr.addEventListener("keydown", function (e) {
+          if (e.target !== tr || (e.key !== "Enter" && e.key !== " ")) return;
+          e.preventDefault();
+          cfg.onRowClick(row);
+        });
+      }
+      return tr;
+    }
+
+    function pagerButton(label, disabled, step) {
+      var button = node("button", "btn", label);
+      button.type = "button";
+      button.setAttribute("data-variant", "outline");
+      button.setAttribute("data-size", "sm");
+      button.disabled = disabled;
+      button.addEventListener("click", function () { state.page += step; draw(); });
+      return button;
+    }
+
+    function draw() {
+      var rows = visibleRows();
+      heads.forEach(function (th, i) {
+        if (cols[i].key === state.key) th.setAttribute("aria-sort", state.dir > 0 ? "ascending" : "descending");
+        else th.removeAttribute("aria-sort");
+      });
+      var pages = pageSize ? Math.max(1, Math.ceil(rows.length / pageSize)) : 1;
+      state.page = Math.min(state.page, pages - 1);
+      var shown = pageSize ? rows.slice(state.page * pageSize, (state.page + 1) * pageSize) : rows;
+      tbody.innerHTML = "";
+      if (!shown.length) {
+        var empty = node("td", "skip-table-empty", cfg.empty || "Nenhum registro encontrado.");
+        empty.colSpan = cols.length;
+        tbody.appendChild(node("tr")).appendChild(empty);
+      }
+      shown.forEach(function (row) { tbody.appendChild(drawRow(row)); });
+      if (!pageSize) return;
+      pager.innerHTML = "";
+      var from = rows.length ? state.page * pageSize + 1 : 0;
+      pager.appendChild(node("span", "", from + "–" + Math.min(rows.length, (state.page + 1) * pageSize) + " de " + rows.length));
+      var nav = node("div", "row gap-2");
+      nav.appendChild(pagerButton("Anterior", state.page === 0, -1));
+      nav.appendChild(pagerButton("Próxima", state.page >= pages - 1, 1));
+      pager.appendChild(nav);
+    }
+
+    draw();
+    return {
+      setRows: function (rows) { state.rows = rows.slice(); draw(); },
+      rows: visibleRows
+    };
+  }
+
+  // kpis(el, [{label, value, format?, delta?, hint?}]) — KPI cards in a
+  // responsive grid; delta is a fraction (0.12 renders as ▲ 12%).
+  function kpis(target, items) {
+    var root = resolve(target);
+    root.innerHTML = "";
+    root.classList.add("shell-grid");
+    items.forEach(function (item) {
+      var card = node("div", "panel kpi");
+      card.appendChild(node("span", "kpi-label", item.label));
+      // Large money values go compact ("R$ 27,5 mi"): the full amount does
+      // not fit a KPI card at four per row.
+      var kpiFormat = item.format === "brl" && Math.abs(item.value) >= 1e6 ? fmt.brlCompact : (item.format ? coerceFormat(item.format) : null);
+      card.appendChild(node("span", "kpi-value", kpiFormat ? kpiFormat(item.value) : String(item.value)));
+      if (typeof item.delta === "number") {
+        var up = item.delta >= 0;
+        card.appendChild(node("span", "kpi-delta " + (up ? "up" : "down"), (up ? "▲ " : "▼ ") + fmt.pct(Math.abs(item.delta))));
+      }
+      if (item.hint) card.appendChild(node("span", "kpi-label", item.hint));
+      root.appendChild(card);
+    });
+  }
+
+  // badge(text, variant?) — a .badge node for table cells and lists;
+  // variant is "secondary" | "outline" | "destructive" (default: primary).
+  function badge(text, variant) {
+    var el = node("span", "badge", text);
+    if (variant) el.setAttribute("data-variant", variant);
+    return el;
+  }
+
+  // tabs(el) — wires one .tabs block: [role=tab] buttons inside
+  // [role=tablist], each with aria-controls naming its [role=tabpanel].
+  function tabs(target) {
+    var root = resolve(target);
+    var buttons = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
+    function select(chosen) {
+      buttons.forEach(function (b) {
+        var on = b === chosen;
+        b.setAttribute("aria-selected", on ? "true" : "false");
+        b.tabIndex = on ? 0 : -1;
+        var panel = document.getElementById(b.getAttribute("aria-controls"));
+        if (panel) panel.hidden = !on;
+      });
+    }
+    buttons.forEach(function (b, i) {
+      b.addEventListener("click", function () { select(b); });
+      b.addEventListener("keydown", function (e) {
+        var step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (!step) return;
+        var next = buttons[(i + step + buttons.length) % buttons.length];
+        next.focus();
+        select(next);
+      });
+    });
+    select(buttons.filter(function (b) { return b.getAttribute("aria-selected") === "true"; })[0] || buttons[0]);
+  }
+
+  // toast(message, {type?: "success" | "error", title?, duration?}) — a
+  // .toast in a shared .toaster at the bottom of the page.
+  function toast(message, opts) {
+    opts = opts || {};
+    var toaster = document.querySelector(".toaster") || document.body.appendChild(node("div", "toaster"));
+    var item = node("div", "toast");
+    item.setAttribute("role", opts.type === "error" ? "alert" : "status");
+    item.setAttribute("aria-hidden", "true");
+    if (opts.type) item.setAttribute("data-type", opts.type);
+    var content = node("div", "toast-content");
+    var section = node("section");
+    if (opts.title) section.appendChild(node("h2", "", opts.title));
+    section.appendChild(node("p", "", message));
+    content.appendChild(section);
+    item.appendChild(content);
+    toaster.appendChild(item);
+    requestAnimationFrame(function () { item.setAttribute("aria-hidden", "false"); });
+    setTimeout(function () {
+      item.setAttribute("aria-hidden", "true");
+      setTimeout(function () { item.remove(); }, 400);
+    }, opts.duration || 3000);
+  }
+
+  // Dialogs are native <dialog class="dialog">: a [data-dialog-open="id"]
+  // anywhere opens one, a [data-dialog-close] inside closes it, and a click on
+  // its backdrop closes it too. Plain dialog.showModal()/close() still work.
+  document.addEventListener("click", function (e) {
+    var target = e.target;
+    if (!(target instanceof Element)) return;
+    var opener = target.closest("[data-dialog-open]");
+    if (opener) {
+      var dialog = document.getElementById(opener.getAttribute("data-dialog-open"));
+      if (dialog && dialog.showModal && !dialog.open) dialog.showModal();
+      return;
+    }
+    var closer = target.closest("[data-dialog-close]");
+    if (closer && closer.closest("dialog")) {
+      closer.closest("dialog").close();
+      return;
+    }
+    if (target.tagName === "DIALOG" && target.classList.contains("dialog") && target.open) target.close();
+  });
+
+  // store(key, fallback) — JSON state in localStorage that never throws (a
+  // private window or a full quota falls back to memory): {get, set, update}.
+  function store(key, fallback) {
+    var memory;
+    // Set while the last write did not reach localStorage: what is stored
+    // there is older than memory until a write goes through again.
+    var unsaved = false;
+    var initial = function () { return fallback === undefined ? undefined : JSON.parse(JSON.stringify(fallback)); };
+    function get() {
+      if (!unsaved) {
+        try {
+          var raw = localStorage.getItem(key);
+          if (raw != null) return JSON.parse(raw);
+        } catch (e) { /* storage unavailable: memory below */ }
+      }
+      return memory !== undefined ? memory : initial();
+    }
+    function set(value) {
+      memory = value;
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+        unsaved = false;
+      } catch (e) {
+        unsaved = true;
+      }
+      return value;
+    }
+    return { get: get, set: set, update: function (fn) { return set(fn(get())); } };
+  }
+
+  // mock — seeded random data, so a page asks for 90 days of numbers in one
+  // line instead of writing them out; the same seed gives the same data.
+  var FIRST = ["Ana", "Bruno", "Carla", "Diego", "Eduarda", "Felipe", "Gabriela", "Henrique", "Isabela", "João",
+    "Larissa", "Marcos", "Natália", "Otávio", "Paula", "Rafael", "Sofia", "Thiago", "Vanessa", "Lucas"];
+  var LAST = ["Silva", "Santos", "Oliveira", "Souza", "Pereira", "Costa", "Rodrigues", "Almeida", "Nascimento", "Lima",
+    "Araújo", "Fernandes", "Carvalho", "Gomes", "Martins", "Rocha", "Ribeiro", "Barbosa"];
+  var INITIALS = "ABCDEFGHIJLMNOPRSTV".split("");
+  var CITIES = ["São Paulo, SP", "Rio de Janeiro, RJ", "Belo Horizonte, MG", "Curitiba, PR", "Porto Alegre, RS",
+    "Salvador, BA", "Recife, PE", "Fortaleza, CE", "Brasília, DF", "Goiânia, GO", "Campinas, SP", "Florianópolis, SC",
+    "Manaus, AM", "Belém, PA", "Vitória, ES", "Natal, RN"];
+
+  function createMock(seed) {
+    var state = seed >>> 0;
+    var names = 0;
+    function random() {
+      state = (state + 0x6d2b79f5) >>> 0;
+      var t = state;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    }
+    function int(min, max) { return min + Math.floor(random() * (max - min + 1)); }
+    function pick(list) { return list[Math.floor(random() * list.length)]; }
+    var mock = {
+      seed: function (value) { state = value >>> 0; names = 0; return mock; },
+      random: random,
+      int: int,
+      float: function (min, max, decimals) {
+        var factor = Math.pow(10, decimals == null ? 2 : decimals);
+        return Math.round((min + random() * (max - min)) * factor) / factor;
+      },
+      pick: pick,
+      chance: function (p) { return random() < p; },
+      // There are 360 first/last pairs. A page that draws until the name is
+      // new (do { … } while (used.has(name))) froze the tab past them, so
+      // later draws widen the space: a second surname after 200 (6,480), a
+      // middle initial after 4,000.
+      name: function () {
+        names++;
+        var middle = names > 4000 ? pick(INITIALS) + ". " : "";
+        return pick(FIRST) + " " + middle + (names > 200 ? pick(LAST) + " " : "") + pick(LAST);
+      },
+      city: function () { return pick(CITIES); },
+      // series(n, {start, trend, noise, min, decimals}) — a walk: each value
+      // moves by trend (fraction per step) plus up to ±noise of itself.
+      series: function (n, opts) {
+        opts = opts || {};
+        var value = opts.start == null ? 100 : opts.start;
+        var factor = Math.pow(10, opts.decimals || 0);
+        var out = [];
+        for (var i = 0; i < n; i++) {
+          out.push(Math.max(opts.min == null ? 0 : opts.min, Math.round(value * factor) / factor));
+          value = value * (1 + (opts.trend || 0)) * (1 + (random() * 2 - 1) * (opts.noise == null ? 0.08 : opts.noise));
+        }
+        return out;
+      },
+      // dates(n, {end?, step?: "day" | "week" | "month"}) — ISO dates
+      // (YYYY-MM-DD), oldest first, ending at end (default: today).
+      dates: function (n, opts) {
+        opts = opts || {};
+        var end = opts.end ? new Date(opts.end) : new Date();
+        var out = [];
+        for (var i = n - 1; i >= 0; i--) {
+          var d = new Date(end.getTime());
+          if (opts.step === "month") d.setMonth(d.getMonth() - i);
+          else d.setDate(d.getDate() - i * (opts.step === "week" ? 7 : 1));
+          out.push(d.toISOString().slice(0, 10));
+        }
+        return out;
+      },
+      // rows(n, spec) — n objects; each spec value is a function(i), a list
+      // to pick from, or a constant.
+      rows: function (n, spec) {
+        var out = [];
+        for (var i = 0; i < n; i++) {
+          var row = {};
+          for (var key in spec) {
+            var value = spec[key];
+            row[key] = typeof value === "function" ? value(i) : Array.isArray(value) ? pick(value) : value;
+          }
+          out.push(row);
+        }
+        return out;
+      }
+    };
+    return mock;
+  }
+
+  window.skipShell = { fmt: fmt };
+  window.skipChart = { bar: bar, line: line, donut: donut };
+  window.skipUI = { table: table, kpis: kpis, badge: badge, tabs: tabs, toast: toast };
+  window.skipStore = store;
+  window.skipMock = createMock(20261022);
+})();
+
+</script>
+<style>
+:root {
+--accent: #d94f7e;
+--accent-text: #8a2c4f;
+--accent-contrast: #55434a;
+--rose: #F4C2D7;
+--rose-light: #FBE5ED;
+--yellow: #FFF0B3;
+--yellow-light: #FFF8D9;
+--cream: #FFF9EF;
+--ink: #55434A;
+--serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+--sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+html { scroll-behavior: smooth; }
+body {
+font-family: var(--sans);
+background: var(--cream);
+color: var(--ink);
+line-height: 1.65;
+margin: 0;
+}
+h1, h2, h3 { font-family: var(--serif); color: var(--ink); letter-spacing: 0.01em; }
+section { scroll-margin-top: 84px; }
+a { color: var(--accent-text); }
+:focus-visible { outline: 3px solid var(--accent-text); outline-offset: 3px; border-radius: 6px; }
+
+/* Header */
+.site-header {
+position: sticky; top: 0; z-index: 60;
+background: rgba(255, 249, 239, 0.96);
+backdrop-filter: blur(8px);
+border-bottom: 1px solid #ecd9e1;
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 16px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-family: var(--serif); font-weight: 700; font-size: 1.25rem; }
+.brand svg { width: 34px; height: 34px; flex-shrink: 0; }
+.nav-links { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+.nav-links a {
+text-decoration: none; color: var(--ink); font-size: 0.9rem; font-weight: 500;
+padding: 8px 12px; border-radius: 999px; transition: background 0.2s ease, color 0.2s ease;
+}
+.nav-links a:hover, .nav-links a.active { background: var(--rose-light); color: var(--accent-text); }
+.menu-toggle {
+display: none; background: var(--white, #fff); border: 1px solid #e6c9d6; border-radius: 10px;
+width: 44px; height: 44px; cursor: pointer; align-items: center; justify-content: center; color: var(--ink);
+}
+.menu-toggle span, .menu-toggle span::before, .menu-toggle span::after {
+display: block; width: 20px; height: 2px; background: var(--ink); border-radius: 2px; position: relative; transition: transform 0.25s ease;
+}
+.menu-toggle span::before, .menu-toggle span::after { content: ""; position: absolute; left: 0; }
+.menu-toggle span::before { top: -6px; }
+.menu-toggle span::after { top: 6px; }
+.menu-toggle[aria-expanded="true"] span { background: transparent; }
+.menu-toggle[aria-expanded="true"] span::before { top: 0; transform: rotate(45deg); }
+.menu-toggle[aria-expanded="true"] span::after { top: 0; transform: rotate(-45deg); }
+
+@media (max-width: 1000px) {
+.menu-toggle { display: inline-flex; }
+.nav-links {
+display: none; position: absolute; top: 68px; left: 0; right: 0;
+flex-direction: column; background: var(--cream); padding: 12px 16px 18px;
+border-bottom: 1px solid #ecd9e1; box-shadow: 0 12px 24px rgba(85,67,74,0.08);
+}
+.nav-links.open { display: flex; }
+.nav-links a { display: block; padding: 12px 14px; }
+}
+
+/* Generic sections */
+.section { padding: 72px 0; }
+.section-alt { background: var(--rose-light); }
+.section-head { max-width: 760px; margin: 0 auto 40px; text-align: center; }
+.eyebrow-pill {
+display: inline-block; padding: 6px 14px; border-radius: 999px;
+background: var(--yellow); color: var(--ink); font-size: 0.78rem; font-weight: 600;
+letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 14px;
+}
+.section-title { font-size: clamp(2rem, 4vw, 2.8rem); margin: 0 0 10px; line-height: 1.15; }
+.section-sub { color: var(--ink); opacity: 0.85; margin: 0; font-size: 1.02rem; }
+.container { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+
+.card-soft {
+background: #fff; border: 1px solid #efdbe4; border-radius: 18px;
+box-shadow: 0 6px 18px rgba(85,67,74,0.06);
+transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card-soft:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(85,67,74,0.12); border-color: var(--rose); }
+
+.btn-pill {
+display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 999px;
+background: var(--accent-text); color: #fff; text-decoration: none; font-weight: 600; border: none; cursor: pointer;
+font-family: var(--sans); font-size: 0.98rem; transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+box-shadow: 0 6px 16px rgba(138,44,79,0.22);
+}
+.btn-pill:hover { transform: translateY(-2px); background: #74203f; }
+.btn-ghost {
+display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 999px;
+background: #fff; color: var(--ink); border: 1px solid #e0c3d0; cursor: pointer; font-weight: 600; font-family: var(--sans);
+transition: background 0.2s ease, border-color 0.2s ease;
+}
+.btn-ghost:hover { background: var(--rose-light); border-color: var(--rose); }
+
+/* Hero */
+.hero { padding: 64px 0 80px; background: linear-gradient(180deg, var(--rose-light) 0%, var(--cream) 100%); position: relative; overflow: hidden; }
+.hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; }
+.hero h1 { font-size: clamp(3rem, 7vw, 5.2rem); margin: 14px 0 12px; line-height: 1; letter-spacing: 0.02em; }
+.hero-sub { font-family: var(--serif); font-size: 1.45rem; color: var(--accent-text); margin: 0 0 18px; font-weight: 600; }
+.hero-intro { font-size: 1.02rem; max-width: 620px; margin: 0 0 26px; }
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.quote-impact {
+margin-top: 36px; padding: 18px 22px; border-left: 4px solid var(--accent); background: #fff;
+border-radius: 14px; font-family: var(--serif); font-style: italic; font-size: 1.2rem; color: var(--ink);
+}
+.quote-impact cite { display: block; font-family: var(--sans); font-style: normal; font-size: 0.82rem; color: var(--ink); opacity: 0.8; margin-top: 6px; }
+.hero-art { background: #fff; border-radius: 24px; border: 1px solid #efdbe4; box-shadow: 0 16px 40px rgba(85,67,74,0.12); padding: 18px; }
+.hero-art svg { width: 100%; height: auto; display: block; }
+.float-atom { animation: floatY 6s ease-in-out infinite; }
+.float-atom.b { animation-delay: 1.5s; }
+.float-atom.c { animation-delay: 3s; }
+@keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.spin { transform-origin: center; animation: spin 18s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Process diagram */
+.process { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 36px; position: relative; }
+.step {
+background: #fff; border: 1px solid #efdbe4; border-radius: 18px; padding: 22px 18px; text-align: center;
+box-shadow: 0 6px 18px rgba(85,67,74,0.06);
+opacity: 0; transform: translateY(16px);
+transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.step.visible { opacity: 1; transform: translateY(0); }
+.step:hover { box-shadow: 0 12px 26px rgba(85,67,74,0.12); border-color: var(--rose); }
+.step-num {
+width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;
+background: var(--yellow); color: var(--ink); font-family: var(--serif); font-weight: 700; font-size: 1.3rem;
+}
+.step h3 { font-size: 1.18rem; margin: 0 0 6px; }
+.step p { font-size: 0.9rem; margin: 0; }
+.process::before {
+content: ""; position: absolute; top: 44px; left: 10%; right: 10%; height: 2px;
+background: repeating-linear-gradient(90deg, var(--rose) 0 8px, transparent 8px 16px); z-index: 0;
+}
+.process .step { position: relative; z-index: 1; }
+.flow-caption { margin-top: 24px; text-align: center; font-size: 0.9rem; color: var(--ink); }
+
+/* Explanation layout */
+.explain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+.explain-card { padding: 28px; }
+.explain-card h3 { font-size: 1.5rem; margin: 0 0 8px; }
+.explain-card p { margin: 0 0 12px; }
+.reactor-svg { width: 100%; height: auto; }
+.legend-note { font-size: 0.85rem; color: var(--ink); opacity: 0.85; }
+.highlight-box { background: var(--yellow-light); border: 1px solid #f3e2a0; border-radius: 14px; padding: 16px 18px; margin-top: 14px; font-size: 0.95rem; }
+
+/* Advantages & risks */
+.adv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+.adv-card { padding: 24px; }
+.icon-tile {
+width: 52px; height: 52px; border-radius: 14px; background: var(--rose-light); display: flex; align-items: center; justify-content: center;
+margin-bottom: 14px; color: var(--accent-text);
+}
+.icon-tile svg { width: 28px; height: 28px; }
+.adv-card h3 { font-size: 1.3rem; margin: 0 0 8px; }
+.adv-card p { font-size: 0.94rem; margin: 0; }
+.risk-zone {
+margin-top: 48px; border-radius: 22px; padding: 36px; background: var(--yellow-light);
+border: 1px dashed #d9bf6a;
+}
+.risk-zone h3 { font-size: 2rem; margin: 0 0 6px; }
+.risk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 22px; }
+.risk-card { background: #fff; border-radius: 16px; padding: 22px; border: 1px solid #f0e2b0; transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.risk-card:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(85,67,74,0.1); }
+.risk-card h4 { font-family: var(--serif); font-size: 1.25rem; margin: 10px 0 6px; }
+.risk-card p { font-size: 0.92rem; margin: 0; }
+.risk-tag { display: inline-block; font-size: 0.75rem; font-weight: 600; background: var(--yellow); padding: 3px 10px; border-radius: 999px; color: var(--ink); }
+
+/* Debates */
+.debate-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+.debate-card { padding: 26px; }
+.debate-card h3 { font-size: 1.4rem; margin: 0 0 10px; }
+.debate-card .pov { margin: 10px 0 0; padding: 12px 14px; background: var(--rose-light); border-radius: 12px; font-size: 0.92rem; }
+.debate-card .pov strong { color: var(--accent-text); }
+.big-question {
+margin-top: 40px; text-align: center; padding: 34px 26px; border-radius: 22px;
+background: linear-gradient(120deg, var(--rose) 0%, var(--rose-light) 60%, var(--yellow-light) 100%);
+box-shadow: 0 10px 26px rgba(85,67,74,0.1);
+}
+.big-question p { font-family: var(--serif); font-size: clamp(1.6rem, 3.4vw, 2.3rem); color: var(--ink); margin: 0; font-weight: 600; line-height: 1.25; }
+.big-question small { display: block; margin-top: 10px; font-family: var(--sans); font-size: 0.9rem; color: var(--ink); }
+
+/* Curiosities flip cards */
+.flip-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
+.flip { perspective: 1200px; min-height: 230px; cursor: pointer; }
+.flip-inner {
+position: relative; width: 100%; min-height: 230px; transition: transform 0.6s cubic-bezier(0.4,0.2,0.2,1);
+transform-style: preserve-3d;
+}
+.flip.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-face {
+position: absolute; inset: 0; border-radius: 20px; padding: 24px; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+display: flex; flex-direction: column; box-shadow: 0 6px 18px rgba(85,67,74,0.08); border: 1px solid #efdbe4;
+transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.flip:hover .flip-face { box-shadow: 0 14px 28px rgba(85,67,74,0.14); border-color: var(--rose); }
+.flip-front.rose { background: var(--rose-light); }
+.flip-front.yellow { background: var(--yellow); }
+.flip-back { background: #fff; transform: rotateY(180deg); }
+.flip-face .num { font-family: var(--serif); font-size: 2.4rem; font-weight: 700; color: var(--accent-text); line-height: 1; }
+.flip-face h3 { font-size: 1.32rem; margin: 10px 0 8px; }
+.flip-face p { font-size: 0.93rem; margin: 0; }
+.flip-hint { margin-top: auto; padding-top: 14px; font-size: 0.8rem; color: var(--ink); opacity: 0.85; }
+
+/* Library */
+.tabs-wrap { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 18px; }
+.lib-tab {
+padding: 10px 20px; border-radius: 999px; border: 1px solid #e0c3d0; background: #fff; color: var(--ink);
+cursor: pointer; font-weight: 600; font-family: var(--sans); transition: all 0.2s ease;
+}
+.lib-tab:hover { border-color: var(--rose); background: var(--rose-light); }
+.lib-tab[aria-selected="true"] { background: var(--accent-text); color: #fff; border-color: var(--accent-text); }
+.filter-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; margin-bottom: 26px; }
+.filter-row label { font-size: 0.9rem; font-weight: 500; }
+.filter-row select, .filter-row input {
+padding: 9px 14px; border-radius: 10px; border: 1px solid #e0c3d0; background: #fff; color: var(--ink); font-family: var(--sans); font-size: 0.92rem;
+}
+.lib-count { font-size: 0.88rem; color: var(--ink); text-align: center; margin-bottom: 18px; }
+.lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 22px; }
+.lib-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.lib-cover { height: 150px; display: flex; align-items: center; justify-content: center; }
+.lib-cover svg { width: 100%; height: 100%; }
+.lib-body { padding: 18px 20px 20px; display: flex; flex-direction: column; flex: 1; }
+.lib-type { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-text); }
+.lib-body h3 { font-size: 1.25rem; margin: 6px 0 4px; line-height: 1.2; }
+.lib-meta { font-size: 0.86rem; margin: 0 0 12px; }
+.lib-body .btn-ghost { align-self: flex-start; margin-top: auto; padding: 9px 16px; font-size: 0.88rem; }
+.lib-empty { text-align: center; color: var(--ink); padding: 30px; }
+.dialog-body p { margin: 0 0 12px; }
+.badge-chip { display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--yellow); font-size: 0.75rem; font-weight: 600; color: var(--ink); margin-right: 6px; }
+
+/* Quiz */
+.quiz-wrap { max-width: 760px; margin: 0 auto; padding: 34px; }
+.progress-track { height: 10px; background: var(--rose-light); border-radius: 999px; overflow: hidden; border: 1px solid #efdbe4; }
+.progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--rose), var(--accent)); transition: width 0.4s ease; border-radius: 999px; }
+.progress-meta { display: flex; justify-content: space-between; font-size: 0.86rem; margin-bottom: 8px; }
+.q-title { font-family: var(--serif); font-size: 1.7rem; margin: 26px 0 18px; line-height: 1.25; }
+.options { display: grid; gap: 12px; }
+.opt {
+text-align: left; padding: 15px 18px; border-radius: 14px; border: 1px solid #e6cfd9; background: #fff; color: var(--ink);
+font-family: var(--sans); font-size: 0.98rem; cursor: pointer; transition: all 0.2s ease; display: flex; gap: 12px; align-items: center;
+}
+.opt:hover:not(:disabled) { border-color: var(--rose); background: var(--rose-light); transform: translateX(3px); }
+.opt .letter {
+width: 30px; height: 30px; border-radius: 50%; background: var(--rose-light); display: inline-flex; align-items: center; justify-content: center;
+font-weight: 700; color: var(--accent-text); flex-shrink: 0;
+}
+.opt.selected { border-color: var(--accent-text); background: var(--rose-light); }
+.opt.correct { border-color: #2f7d4d; background: #e7f5ea; }
+.opt.correct .letter { background: #2f7d4d; color: #fff; }
+.opt.wrong { border-color: #b03a4a; background: #fbe7ea; }
+.opt.wrong .letter { background: #b03a4a; color: #fff; }
+.opt:disabled { cursor: default; }
+.feedback { margin-top: 18px; padding: 16px 18px; border-radius: 14px; display: none; font-size: 0.95rem; }
+.feedback.show { display: block; animation: fadeIn 0.35s ease; }
+.feedback.ok { background: #e7f5ea; color: #1f5a36; border: 1px solid #b9dfc4; }
+.feedback.bad { background: #fbe7ea; color: #7a2030; border: 1px solid #efb9c3; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.quiz-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+.score-box { text-align: center; padding: 10px 0; }
+.score-big { font-family: var(--serif); font-size: 4.4rem; font-weight: 700; color: var(--accent-text); line-height: 1; }
+.score-msg { font-family: var(--serif); font-size: 1.5rem; margin: 12px 0 6px; }
+
+/* Sources */
+.sources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.src-card { padding: 20px 22px; }
+.src-card h3 { font-size: 1.2rem; margin: 0 0 6px; }
+.src-card a { font-size: 0.86rem; word-break: break-all; display: block; margin-top: 6px; }
+.org-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 26px; }
+
+/* Footer */
+.site-footer { background: var(--ink); color: #fbeef3; padding: 50px 0 28px; }
+.site-footer h3 { color: #fff; font-size: 1.3rem; margin: 0 0 10px; }
+.site-footer a { color: #fbe5ed; text-decoration: none; }
+.site-footer a:hover { text-decoration: underline; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; }
+.footer-links { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: 0.94rem; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.18); margin-top: 28px; padding-top: 18px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 0.85rem; }
+.btn-top {
+background: var(--rose); color: var(--ink); border: none; padding: 10px 18px; border-radius: 999px; cursor: pointer; font-weight: 600; font-family: var(--sans);
+transition: transform 0.2s ease, background 0.2s ease;
+}
+.btn-top:hover { transform: translateY(-2px); background: var(--yellow); }
+
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+@media (max-width: 960px) {
+.hero-grid, .explain-grid { grid-template-columns: 1fr; }
+.process { grid-template-columns: 1fr; }
+.process::before { display: none; }
+.footer-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+.hero { padding: 40px 0 56px; }
+.section { padding: 52px 0; }
+.risk-zone { padding: 24px; }
+.quiz-wrap { padding: 22px; }
+.hero-actions .btn-pill, .hero-actions .btn-ghost { width: 100%; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+*, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header" id="topo">
+<div class="container header-inner">
+<a class="brand" href="#inicio" aria-label="Energia Nuclear — início">
+<svg viewBox="0 0 40 40" aria-hidden="true">
+<circle cx="20" cy="20" r="3.2" fill="#d94f7e"/>
+<ellipse cx="20" cy="20" rx="16" ry="6.5" fill="none" stroke="#55434A" stroke-width="1.2"/>
+<ellipse cx="20" cy="20" rx="16" ry="6.5" fill="none" stroke="#55434A" stroke-width="1.2" transform="rotate(60 20 20)"/>
+<ellipse cx="20" cy="20" rx="16" ry="6.5" fill="none" stroke="#55434A" stroke-width="1.2" transform="rotate(-60 20 20)"/>
+</svg>
+<span>Energia Nuclear</span>
+</a>
+<button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMenu">
+<span></span>
+</button>
+<nav aria-label="Navegação principal">
+<ul class="nav-links" id="navMenu">
+<li><a href="#inicio" data-nav>Início</a></li>
+<li><a href="#o-que-e" data-nav>O que é energia nuclear?</a></li>
+<li><a href="#vantagens" data-nav>Vantagens e riscos</a></li>
+<li><a href="#polemicas" data-nav>Polêmicas</a></li>
+<li><a href="#curiosidades" data-nav>Curiosidades</a></li>
+<li><a href="#biblioteca" data-nav>Biblioteca</a></li>
+<li><a href="#quiz" data-nav>Quiz</a></li>
+</ul>
+</nav>
+</div>
+</header>
+
+<main>
+
+<!-- 1. INÍCIO -->
+<section id="inicio" class="hero">
+<div class="container hero-grid">
+<div>
+<span class="eyebrow-pill">Trabalho escolar • Equipe 4</span>
+<h1>ENERGIA NUCLEAR</h1>
+<p class="hero-sub">Uma fonte de energia que transforma o mundo e divide opiniões sobre o futuro.</p>
+<p class="hero-intro">A energia nuclear é uma fonte de energia gerada principalmente pela fissão de átomos de urânio em reatores. Destaca-se pela alta densidade energética e pela ausência de emissões de gases de efeito estufa durante a geração de eletricidade. Entretanto, seus riscos, custos e impactos ambientais levantam importantes debates sobre seu papel no futuro energético global e brasileiro.</p>
+<div class="hero-actions">
+<a class="btn-pill" href="#o-que-e" data-scroll>Descubra mais →</a>
+<a class="btn-ghost" href="#quiz">Testar meus conhecimentos</a>
+</div>
+<blockquote class="quote-impact">
+“A ciência ilumina o caminho; a energia move o futuro.”
+<cite>Frase de impacto da Equipe 4</cite>
+</blockquote>
+</div>
+
+<div class="hero-art" aria-label="Ilustração de uma usina nuclear com elementos científicos">
+<svg viewBox="0 0 520 420" role="img" aria-labelledby="heroTitle">
+<title id="heroTitle">Ilustração de uma usina nuclear com torre de resfriamento, átomos e linhas de transmissão</title>
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#FBE5ED"/>
+<stop offset="1" stop-color="#FFF8D9"/>
+</linearGradient>
+<linearGradient id="tower" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#ffffff"/>
+<stop offset="1" stop-color="#e9dfe3"/>
+</linearGradient>
+</defs>
+<rect width="520" height="420" rx="18" fill="url(#sky)"/>
+<circle cx="430" cy="90" r="34" fill="#FFF0B3" opacity="0.9"/>
+<!-- ground -->
+<path d="M0 330 Q130 300 260 326 T520 320 V420 H0 Z" fill="#F4C2D7" opacity="0.55"/>
+<!-- cooling tower -->
+<path d="M110 330 L130 120 Q160 100 190 120 L210 330 Z" fill="url(#tower)" stroke="#55434A" stroke-width="1.5" opacity="0.95"/>
+<path d="M130 160 Q160 170 190 160" stroke="#c9b3bd" fill="none" stroke-width="1.5"/>
+<path d="M136 210 Q160 220 184 210" stroke="#c9b3bd" fill="none" stroke-width="1.5"/>
+<!-- reactor dome -->
+<path d="M260 330 V240 Q320 180 380 240 V330 Z" fill="#ffffff" stroke="#55434A" stroke-width="1.5"/>
+<path d="M300 330 V290 Q320 270 340 290 V330" fill="#FFF0B3" stroke="#55434A" stroke-width="1"/>
+<!-- steam -->
+<g fill="#ffffff" opacity="0.85">
+<circle cx="160" cy="92" r="16"/><circle cx="182" cy="74" r="20"/><circle cx="210" cy="90" r="14"/>
+<circle cx="150" cy="66" r="10"/>
+</g>
+<!-- power lines -->
+<path d="M30 330 L60 150 M70 330 L84 170 M490 330 L460 160" stroke="#55434A" stroke-width="1.2" fill="none"/>
+<path d="M60 170 H110 M52 210 H100 M458 180 H404" stroke="#55434A" stroke-width="1.2" fill="none"/>
+<path d="M60 170 Q96 190 110 170 M60 210 Q80 222 100 210 M404 180 Q430 196 458 180" stroke="#55434A" stroke-width="0.9" fill="none" opacity="0.6"/>
+<!-- atom motif -->
+<g class="float-atom" transform="translate(410 230)">
+<ellipse cx="0" cy="0" rx="48" ry="16" fill="none" stroke="#d94f7e" stroke-width="2"/>
+<ellipse cx="0" cy="0" rx="48" ry="16" fill="none" stroke="#d94f7e" stroke-width="2" transform="rotate(60)"/>
+<ellipse cx="0" cy="0" rx="48" ry="16" fill="none" stroke="#d94f7e" stroke-width="2" transform="rotate(-60)"/>
+<circle cx="0" cy="0" r="6" fill="#55434A"/>
+</g>
+<g class="float-atom b" transform="translate(80 80)">
+<circle r="7" fill="#FFF0B3" stroke="#55434A" stroke-width="1"/>
+<circle cx="18" r="3" fill="#d94f7e"/>
+</g>
+<g class="float-atom c" transform="translate(470 60)">
+<circle r="5" fill="#d94f7e"/>
+<circle cx="-14" cy="10" r="3" fill="#55434A"/>
+</g>
+<!-- molecule -->
+<g transform="translate(60 290)" opacity="0.85">
+<circle cx="0" cy="0" r="7" fill="#55434A"/>
+<circle cx="18" cy="-8" r="5" fill="#d94f7e"/>
+<circle cx="18" cy="12" r="5" fill="#FFF0B3" stroke="#55434A" stroke-width="0.8"/>
+<line x1="0" y1="0" x2="18" y2="-8" stroke="#55434A" stroke-width="1.5"/>
+<line x1="0" y1="0" x2="18" y2="12" stroke="#55434A" stroke-width="1.5"/>
+</g>
+</svg>
+<p class="legend-note" style="margin:10px 4px 0;">Ilustração estilizada: torre de resfriamento, cúpula do reator e linhas de transmissão.</p>
+</div>
+</div>
+</section>
+
+<!-- 2. O QUE É -->
+<section id="o-que-e" class="section section-alt">
+<div class="container">
+<div class="section-head reveal">
+<span class="eyebrow-pill">Conceito</span>
+<h2 class="section-title">O que é energia nuclear?</h2>
+<p class="section-sub">A energia nuclear é a energia liberada nas transformações do núcleo atômico. Nas usinas, ela vira eletricidade por meio de um processo térmico conhecido.</p>
+</div>
+
+<div class="explain-grid">
+<div class="card-soft explain-card reveal">
+<h3>Fissão nuclear e o papel do urânio</h3>
+<p>Na fissão, o núcleo de um átomo pesado, como o urânio-235, é atingido por um nêutron e se divide em núcleos menores. Nesse processo são liberados calor, novos nêutrons e radiação, que podem dar continuidade à reação em cadeia.</p>
+<p>O urânio é o combustível usado porque seus átomos se fissionam com facilidade e liberam muita energia a partir de pouca massa.</p>
+<div class="highlight-box"><strong>Importante:</strong> nas usinas convencionais, a fissão libera calor, que aquece água e produz vapor. Esse vapor movimenta turbinas conectadas a geradores elétricos.</div>
+</div>
+
+<div class="card-soft explain-card reveal">
+<h3>Como funciona um reator nuclear</h3>
+<p>O reator é um equipamento onde a reação em cadeia é controlada. Barras de controle absorvem nêutrons para ajustar a potência, e a água do circuito primário retira o calor do núcleo do reator.</p>
+<svg class="reactor-svg" viewBox="0 0 460 240" role="img" aria-label="Esquema simplificado de um reator nuclear com vapor, turbina e gerador">
+<rect x="0" y="0" width="460" height="240" rx="14" fill="#FFF8D9"/>
+<!-- reactor vessel -->
+<rect x="40" y="60" width="110" height="130" rx="14" fill="#fff" stroke="#55434A" stroke-width="1.5"/>
+<text x="95" y="50" text-anchor="middle" font-size="12" fill="#55434A">Reator</text>
+<g fill="#d94f7e"><circle cx="70" cy="110" r="4"/><circle cx="95" cy="130" r="4"/><circle cx="120" cy="105" r="4"/><circle cx="85" cy="160" r="4"/></g>
+<!-- steam pipe -->
+<path d="M150 90 H220" stroke="#55434A" stroke-width="2" fill="none"/>
+<text x="185" y="82" text-anchor="middle" font-size="11" fill="#55434A">vapor</text>
+<!-- turbine -->
+<circle cx="260" cy="110" r="36" fill="#F4C2D7" stroke="#55434A" stroke-width="1.5"/>
+<g class="spin" style="transform-origin:260px 110px">
+<line x1="260" y1="110" x2="260" y2="82" stroke="#55434A" stroke-width="3"/>
+<line x1="260" y1="110" x2="282" y2="122" stroke="#55434A" stroke-width="3"/>
+<line x1="260" y1="110" x2="238" y2="122" stroke="#55434A" stroke-width="3"/>
+</g>
+<text x="260" y="168" text-anchor="middle" font-size="12" fill="#55434A">Turbina</text>
+<!-- generator -->
+<path d="M296 110 H340" stroke="#55434A" stroke-width="2"/>
+<rect x="340" y="84" width="80" height="54" rx="8" fill="#FFF0B3" stroke="#55434A" stroke-width="1.5"/>
+<text x="380" y="116" text-anchor="middle" font-size="12" fill="#55434A">Gerador</text>
+<path d="M420 110 H446" stroke="#55434A" stroke-width="2"/>
+<text x="330" y="200" text-anchor="middle" font-size="11" fill="#55434A">eletricidade →  rede</text>
+</svg>
+</div>
+</div>
+
+<h3 class="reveal" style="text-align:center; margin:52px 0 6px; font-size:1.8rem;">Da fissão à eletricidade: 5 etapas</h3>
+<p class="reveal" style="text-align:center; margin:0 0 6px; font-size:0.95rem;">Passe o mouse sobre cada etapa para destacá-la.</p>
+<div class="process" id="processSteps">
+<div class="step" tabindex="0">
+<div class="step-num">1</div>
+<h3>Fissão</h3>
+<p>Átomos de urânio se dividem ao absorver nêutrons.</p>
+</div>
+<div class="step" tabindex="0">
+<div class="step-num">2</div>
+<h3>Calor</h3>
+<p>A fissão libera grande quantidade de calor.</p>
+</div>
+<div class="step" tabindex="0">
+<div class="step-num">3</div>
+<h3>Vapor</h3>
+<p>A água aquecida se transforma em vapor.</p>
+</div>
+<div class="step" tabindex="0">
+<div class="step-num">4</div>
+<h3>Turbinas</h3>
+<p>O vapor movimenta as turbinas.</p>
+</div>
+<div class="step" tabindex="0">
+<div class="step-num">5</div>
+<h3>Eletricidade</h3>
+<p>Os geradores convertem o movimento em energia elétrica.</p>
+</div>
+</div>
+<p class="flow-caption">Resumo: fissão → calor → vapor → turbina → eletricidade.</p>
+</div>
+</section>
+
+<!-- 3. VANTAGENS E RISCOS -->
+<section id="vantagens" class="section">
+<div class="container">
+<div class="section-head reveal">
+<span class="eyebrow-pill">Avaliação</span>
+<h2 class="section-title">Vantagens e riscos</h2>
+<p class="section-sub">Quatro pontos fortes da energia nuclear e três fatores que exigem atenção e controle rigoroso.</p>
+</div>
+
+<div class="adv-grid">
+<article class="card-soft adv-card reveal">
+<div class="icon-tile">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 16c3-6 13-6 16 0"/><path d="M8 19c2-2 6-2 8 0"/><circle cx="12" cy="8" r="3"/></svg>
+</div>
+<h3>Baixa emissão de carbono</h3>
+<p>Não queima combustíveis fósseis nem libera quantidades significativas de gases de efeito estufa na geração de eletricidade.</p>
+</article>
+<article class="card-soft adv-card reveal">
+<div class="icon-tile">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+</div>
+<h3>Geração contínua e estável</h3>
+<p>Opera 24 horas por dia, sem depender de chuva, vento ou sol, ajudando a estabilizar a rede elétrica.</p>
+</article>
+<article class="card-soft adv-card reveal">
+<div class="icon-tile">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h6v6H9z"/></svg>
+</div>
+<h3>Alta densidade e menor área</h3>
+<p>Produz grande volume de energia com pouco combustível e ocupa menos espaço que grandes hidrelétricas ou parques solares extensos.</p>
+</article>
+<article class="card-soft adv-card reveal">
+<div class="icon-tile">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10l9-6 9 6v9H3z"/><path d="M9 19v-5h6v5"/></svg>
+</div>
+<h3>Relevância estratégica no Brasil</h3>
+<p>O país possui grandes reservas de urânio, domina etapas do ciclo do combustível nuclear e conta com Angra 1 e Angra 2, além do debate sobre Angra 3.</p>
+</article>
+</div>
+
+<div class="risk-zone reveal" id="riscos">
+<span class="risk-tag">Atenção</span>
+<h3 style="margin-top:10px;">Riscos</h3>
+<p style="margin:0; font-size:0.98rem;">Explicações curtas e objetivas sobre os principais pontos de controle.</p>
+<div class="risk-grid">
+<div class="risk-card">
+<span class="risk-tag">Segurança</span>
+<h4>Acidentes graves e radiação</h4>
+<p>Embora raros, podem provocar vazamentos radioativos com impactos humanos e ambientais significativos, como em Chernobyl (1986) e Fukushima (2011).</p>
+</div>
+<div class="risk-card">
+<span class="risk-tag">Resíduos</span>
+<h4>Resíduos radioativos</h4>
+<p>Rejeitos de diferentes níveis de periculosidade exigem armazenamento seguro e monitoramento por longos períodos.</p>
+</div>
+<div class="risk-card">
+<span class="risk-tag">Meio ambiente</span>
+<h4>Mineração e uso da água</h4>
+<p>A extração e o processamento do urânio exigem cuidados ambientais; as usinas precisam de controle rigoroso do uso da água de resfriamento.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 4. POLÊMICAS -->
+<section id="polemicas" class="section section-alt">
+<div class="container">
+<div class="section-head reveal">
+<span class="eyebrow-pill">Debate</span>
+<h2 class="section-title">ENERGIA NUCLEAR: SOLUÇÃO OU CONTROVÉRSIA?</h2>
+<p class="section-sub">Três temas em que defensores e críticos apresentam argumentos diferentes. Nenhum lado é apresentado como definitivo.</p>
+</div>
+<div class="debate-grid">
+<article class="card-soft debate-card reveal">
+<h3>Custo e prazo de construção</h3>
+<p>Investimentos iniciais elevados e longos cronogramas, em comparação com fontes de operação mais rápida.</p>
+<p class="pov"><strong>Ponto de vista A:</strong> o custo se diluí ao longo de décadas de operação contínua e estável.</p>
+<p class="pov"><strong>Ponto de vista B:</strong> projetos longos aumentam o risco financeiro e o atraso na oferta de energia.</p>
+</article>
+<article class="card-soft debate-card reveal">
+<h3>Fonte limpa versus não renovável</h3>
+<p>Defensores a veem como aliada no combate às mudanças climáticas; críticos lembram que o urânio é um recurso finito e que existem alternativas renováveis.</p>
+<p class="pov"><strong>Ponto de vista A:</strong> a fonte reduz emissões enquanto a transição energética avança.</p>
+<p class="pov"><strong>Ponto de vista B:</strong> o urânio se esgota e as renováveis oferecem caminhos com menos resíduos de longa duração.</p>
+</article>
+<article class="card-soft debate-card reveal">
+<h3>Proliferação nuclear e segurança geopolítica</h3>
+<p>O domínio do ciclo nuclear levanta debates sobre segurança internacional e uso dual, civil e militar.</p>
+<p class="pov"><strong>Ponto de vista A:</strong> acordos internacionais e fiscalização da AIEA reduzem o risco de desvio de material.</p>
+<p class="pov"><strong>Ponto de vista B:</strong> a tecnologia civil pode servir de base para programas militares, mesmo com controles.</p>
+</article>
+</div>
+<div class="big-question reveal">
+<p>“Até que ponto os benefícios da energia nuclear compensam seus riscos?”</p>
+<small>Pergunta para reflexão: discuta com colegas e com seu professor.</small>
+</div>
+</div>
+</section>
+
+<!-- 5. CURIOSIDADES -->
+<section id="curiosidades" class="section">
+<div class="container">
+<div class="section-head reveal">
+<span class="eyebrow-pill">Você sabia?</span>
+<h2 class="section-title">Curiosidades</h2>
+<p class="section-sub">Clique em um cartão para virá-lo e ler o detalhe. Seis fatos para conhecer melhor o tema.</p>
+</div>
+<div class="flip-grid" id="flipGrid">
+<div class="flip" tabindex="0" role="button" aria-pressed="false">
+<div class="flip-inner">
+<div class="flip-face flip-front rose">
+<span class="num">1</span>
+<h3>Reator natural de Oklo</h3>
+<p>Há cerca de 2 bilhões de anos, existiu um reator nuclear natural em Oklo, no Gabão.</p>
+<span class="flip-hint">Clique para ler mais</span>
+</div>
+<div class="flip-face flip-back">
+<span class="num">1</span>
+<h3>Como isso aconteceu?</h3>
+<p>As fissões ocorreram espontaneamente, com a água subterrânea atuando como moderadora dos nêutrons.</p>
+<span class="flip-hint">Clique para voltar</span>
+</div>
+</div>
+</div>
+<div class="flip" tabindex="0" role="button" aria-pressed="false">
+<div class="flip-inner">
+<div class="flip-face flip-front yellow">
+<span class="num">2</span>
+<h3>Alta densidade energética</h3>
+<p>Segundo o Departamento de Energia dos EUA, o combustível nuclear usado acumulado pela indústria americana ao longo de décadas poderia caber em uma área equivalente a um campo de futebol.</p>
+<span class="flip-hint">Clique para ler mais</span>
+</div>
+<div class="flip-face flip-back">
+<span class="num">2</span>
+<h3>Qual a profundidade?</h3>
+<p>Essa área teria profundidade inferior a 10 jardas (cerca de 9 metros).</p>
+<span class="flip-hint">Clique para voltar</span>
+</div>
+</div>
+</div>
+<div class="flip" tabindex="0" role="button" aria-pressed="false">
+<div class="flip-inner">
+<div class="flip-face flip-front rose">
+<span class="num">3</span>
+<h3>Funcionamento contínuo</h3>
+<p>As usinas costumam operar por longos períodos antes do reabastecimento.</p>
+<span class="flip-hint">Clique para ler mais</span>
+</div>
+<div class="flip-face flip-back">
+<span class="num">3</span>
+<h3>Quanto tempo?</h3>
+<p>Geralmente entre 18 e 24 meses entre um reabastecimento e outro.</p>
+<span class="flip-hint">Clique para voltar</span>
+</div>
+</div>
+</div>
+<div class="flip" tabindex="0" role="button" aria-pressed="false">
+<div class="flip-inner">
+<div class="flip-face flip-front yellow">
+<span class="num">4</span>
+<h3>A França e a energia nuclear</h3>
+<p>A França já produziu mais de 70% de sua eletricidade por essa fonte em determinados anos.</p>
+<span class="flip-hint">Clique para ler mais</span>
+</div>
+<div class="flip-face flip-back">
+<span class="num">4</span>
+<h3>Um modelo de destaque</h3>
+<p>O país é um dos maiores exemplos de uso intensivo de energia nuclear na geração de eletricidade.</p>
+<span class="flip-hint">Clique para voltar</span>
+</div>
+</div>
+</div>
+<div class="flip" tabindex="0" role="button" aria-pressed="false">
+<div class="flip-inner">
+<div class="flip-face flip-front rose">
+<span class="num">5</span>
+<h3>Primeira usina comercial</h3>
+<p>Entrou em operação em 1954, em Obninsk, na antiga União Soviética.</p>
+<span class="flip-hint">Clique para ler mais</span>
+</div>
+<div class="flip-face flip-back">
+<span class="num">5</span>
+<h3>Um marco histórico</h3>
+<p>Foi um marco para a produção de eletricidade a partir da fissão nuclear em escala comercial.</p>
+<span class="flip-hint">Clique para voltar</span>
+</div>
+</div>
+</div>
+<div class="flip" tabindex="0" role="button" aria-pressed="false">
+<div class="flip-inner">
+<div class="flip-face flip-front yellow">
+<span class="num">6</span>
+<h3>Além da eletricidade</h3>
+<p>A tecnologia nuclear tem aplicações na medicina, na agricultura, na indústria e na propulsão de embarcações.</p>
+<span class="flip-hint">Clique para ler mais</span>
+</div>
+<div class="flip-face flip-back">
+<span class="num">6</span>
+<h3>Exemplos de uso</h3>
+<p>Radioisótopos são usados em diagnósticos médicos, esterilização de materiais e controle de pragas na agricultura.</p>
+<span class="flip-hint">Clique para voltar</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 6. BIBLIOTECA -->
+<section id="biblioteca" class="section section-alt">
+<div class="container">
+<div class="section-head reveal">
+<span class="eyebrow-pill">Acervo</span>
+<h2 class="section-title">BIBLIOTECA NUCLEAR</h2>
+<p class="section-sub">Explore a energia nuclear além da ciência: livros, filmes e documentários. Use as abas e os filtros para navegar.</p>
+</div>
+
+<div class="tabs-wrap" role="tablist" aria-label="Tipos de conteúdo">
+<button class="lib-tab" role="tab" aria-selected="true" data-tab="livros" id="tab-livros" aria-controls="libPanel">Livros</button>
+<button class="lib-tab" role="tab" aria-selected="false" data-tab="filmes" id="tab-filmes" aria-controls="libPanel">Filmes</button>
+<button class="lib-tab" role="tab" aria-selected="false" data-tab="docs" id="tab-docs" aria-controls="libPanel">Documentários</button>
+</div>
+
+<div class="filter-row">
+<label for="libSearch">Buscar:</label>
+<input id="libSearch" type="search" placeholder="Título ou autor">
+<label for="libYear">Ano:</label>
+<select id="libYear"><option value="">Todos</option></select>
+</div>
+<p class="lib-count" id="libCount" aria-live="polite"></p>
+
+<div class="lib-grid" id="libPanel" role="tabpanel"></div>
+</div>
+
+<dialog class="dialog" id="libDialog" aria-labelledby="libDialogTitle">
+<div>
+<header>
+<h2 id="libDialogTitle">Título</h2>
+<p id="libDialogMeta" class="muted"></p>
+</header>
+<section class="dialog-body">
+<p id="libDialogType"></p>
+<p id="libDialogDesc"></p>
+</section>
+<footer class="row" style="justify-content:flex-end; gap:10px;">
+<button class="btn-ghost" data-dialog-close>Fechar</button>
+</footer>
+</div>
+</dialog>
+</section>
+
+<!-- 7. QUIZ -->
+<section id="quiz" class="section">
+<div class="container">
+<div class="section-head reveal">
+<span class="eyebrow-pill">Teste</span>
+<h2 class="section-title">QUANTO VOCÊ SABE SOBRE ENERGIA NUCLEAR?</h2>
+<p class="section-sub">Oito perguntas de múltipla escolha. Escolha uma alternativa por pergunta e veja a explicação.</p>
+</div>
+
+<div class="card-soft quiz-wrap reveal" id="quizCard">
+<div class="progress-meta"><span id="qCounter">Pergunta 1 de 8</span><span id="qScore">Acertos: 0</span></div>
+<div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="qProgressTrack"><div class="progress-fill" id="qProgress"></div></div>
+<div id="quizBody"></div>
+<div class="quiz-actions">
+<button class="btn-ghost" id="qPrev">← Anterior</button>
+<button class="btn-pill" id="qNext" disabled>Próxima →</button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 8. FONTES -->
+<section id="fontes" class="section section-alt">
+<div class="container">
+<div class="section-head reveal">
+<span class="eyebrow-pill">Referências</span>
+<h2 class="section-title">Fontes e referências</h2>
+<p class="section-sub">Fontes priorizadas: CNEN, IAEA, Departamento de Energia dos EUA (DOE), IEA e ONU.</p>
+</div>
+<div class="org-row reveal">
+<span class="badge-chip">CNEN</span><span class="badge-chip">IAEA</span><span class="badge-chip">DOE</span><span class="badge-chip">IEA</span><span class="badge-chip">ONU</span>
+</div>
+<div class="sources-grid">
+<div class="card-soft src-card reveal">
+<h3>CNEN</h3>
+<p class="muted" style="margin:0; font-size:0.9rem;">Comissão Nacional de Energia Nuclear: notícias e publicações sobre energia nuclear no Brasil.</p>
+<a href="https://www.gov.br/cnen/pt-br/assunto/ultimas-noticias/pesquisador-do-cdtn-lanca-livro-sobre-a-energia-nuclear" target="_blank" rel="noopener">gov.br/cnen — pesquisador do CDTN lança livro sobre energia nuclear</a>
+</div>
+<div class="card-soft src-card reveal">
+<h3>Museu Nuclear</h3>
+<p class="muted" style="margin:0; font-size:0.9rem;">Curiosidades sobre a história e a ciência nuclear.</p>
+<a href="https://museunuclear.com/curiosidades/" target="_blank" rel="noopener">museunuclear.com/curiosidades</a>
+</div>
+<div class="card-soft src-card reveal">
+<h3>Departamento de Energia dos EUA (DOE)</h3>
+<p class="muted" style="margin:0; font-size:0.9rem;">Fatos rápidos sobre energia nuclear.</p>
+<a href="https://www.energy.gov/ne/articles/5-fast-facts-about-nuclear-energy" target="_blank" rel="noopener">energy.gov — 5 fast facts about nuclear energy</a>
+</div>
+<div class="card-soft src-card reveal">
+<h3>Estadão</h3>
+<p class="muted" style="margin:0; font-size:0.9rem;">Livros e séries sobre a bomba atômica e o Projeto Manhattan.</p>
+<a href="https://www.estadao.com.br/cultura/cinema/o-que-voce-precisa-saber-antes-de-ver-oppenheimer-conheca-livros-e-series-sobre-a-bomba-atomica/" target="_blank" rel="noopener">estadao.com.br — o que saber antes de ver Oppenheimer</a>
+</div>
+<div class="card-soft src-card reveal">
+<h3>Five Books</h3>
+<p class="muted" style="margin:0; font-size:0.9rem;">Recomendações de leitura sobre energia nuclear.</p>
+<a href="https://fivebooks.com/best-books/nuclear-richard-wolfson/" target="_blank" rel="noopener">fivebooks.com — best books on nuclear</a>
+</div>
+<div class="card-soft src-card reveal">
+<h3>Cinema 10</h3>
+<p class="muted" style="margin:0; font-size:0.9rem;">Lista de filmes sobre energia nuclear.</p>
+<a href="https://cinema10.com.br/tipos/filmes-sobre-energia-nuclear" target="_blank" rel="noopener">cinema10.com.br — filmes sobre energia nuclear</a>
+</div>
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- 9. RODAPÉ -->
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div>
+<h3>Energia Nuclear</h3>
+<p style="margin:0 0 6px;">Equipe 4 • Trabalho escolar</p>
+<p style="margin:0; font-size:0.9rem; opacity:0.9;">Site educativo com informações sobre a energia nuclear, seus benefícios, riscos e debates.</p>
+</div>
+<div>
+<h3>Seções</h3>
+<ul class="footer-links">
+<li><a href="#inicio">Início</a></li>
+<li><a href="#o-que-e">O que é energia nuclear?</a></li>
+<li><a href="#vantagens">Vantagens e riscos</a></li>
+<li><a href="#polemicas">Polêmicas</a></li>
+<li><a href="#curiosidades">Curiosidades</a></li>
+<li><a href="#biblioteca">Biblioteca</a></li>
+<li><a href="#quiz">Quiz</a></li>
+</ul>
+</div>
+<div>
+<h3>Referências</h3>
+<ul class="footer-links">
+<li><a href="#fontes">Fontes e referências</a></li>
+<li><a href="https://www.gov.br/cnen/pt-br/assunto/ultimas-noticias/pesquisador-do-cdtn-lanca-livro-sobre-a-energia-nuclear" target="_blank" rel="noopener">CNEN</a></li>
+<li><a href="https://www.energy.gov/ne/articles/5-fast-facts-about-nuclear-energy" target="_blank" rel="noopener">DOE</a></li>
+</ul>
+</div>
+</div>
+<div class="footer-bottom">
+<span>Energia Nuclear • Equipe 4 • Trabalho escolar</span>
+<button class="btn-top" id="btnTop">Voltar ao início ↑</button>
+</div>
+</div>
+</footer>
+
+<script>
+(function () {
+// Menu hamburger
+var toggle = document.getElementById('menuToggle');
+var nav = document.getElementById('navMenu');
+toggle.addEventListener('click', function () {
+var open = nav.classList.toggle('open');
+toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+nav.querySelectorAll('a').forEach(function (a) {
+a.addEventListener('click', function () {
+nav.classList.remove('open');
+toggle.setAttribute('aria-expanded', 'false');
+});
+});
+
+// Smooth scroll for in-page links
+document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+a.addEventListener('click', function (e) {
+var id = a.getAttribute('href').slice(1);
+var target = document.getElementById(id);
+if (target) {
+e.preventDefault();
+target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+history.replaceState(null, '', '#' + id);
+}
+});
+});
+
+// Active nav highlight
+var navLinks = document.querySelectorAll('[data-nav]');
+var sectionIds = ['inicio', 'o-que-e', 'vantagens', 'polemicas', 'curiosidades', 'biblioteca', 'quiz'];
+var spy = new IntersectionObserver(function (entries) {
+entries.forEach(function (en) {
+if (en.isIntersecting) {
+navLinks.forEach(function (l) {
+l.classList.toggle('active', l.getAttribute('href') === '#' + en.target.id);
+});
+}
+});
+}, { rootMargin: '-45% 0px -50% 0px' });
+sectionIds.forEach(function (id) {
+var s = document.getElementById(id);
+if (s) spy.observe(s);
+});
+
+// Reveal on scroll
+var reveals = document.querySelectorAll('.reveal, .step');
+var revealObs = new IntersectionObserver(function (entries) {
+entries.forEach(function (en) {
+if (en.isIntersecting) {
+en.target.classList.add('in', 'visible');
+revealObs.unobserve(en.target);
+}
+});
+}, { threshold: 0.12 });
+reveals.forEach(function (el) { revealObs.observe(el); });
+
+// Process steps hover highlight
+document.querySelectorAll('#processSteps .step').forEach(function (step) {
+step.addEventListener('mouseenter', function () {
+document.querySelectorAll('#processSteps .step').forEach(function (s) { s.style.borderColor = '#efdbe4'; });
+step.style.borderColor = '#d94f7e';
+});
+step.addEventListener('mouseleave', function () { step.style.borderColor = ''; });
+});
+
+// Flip cards
+document.querySelectorAll('.flip').forEach(function (card) {
+function toggleFlip() {
+var on = card.classList.toggle('flipped');
+card.setAttribute('aria-pressed', on ? 'true' : 'false');
+}
+card.addEventListener('click', toggleFlip);
+card.addEventListener('keydown', function (e) {
+if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFlip(); }
+});
+});
+
+// Library
+var books = [
+{ id: 'b1', type: 'livro', title: 'Energia Nuclear: uma introdução', author: 'Amir Zacarias Mesquita', year: 2019, color: '#F4C2D7', desc: 'Introdução à engenharia nuclear, abordando física de nêutrons, tipos de reatores e o ciclo do combustível nuclear.' },
+{ id: 'b2', type: 'livro', title: 'Vozes de Tchernóbil', author: 'Svetlana Aleksiévitch', year: 1997, color: '#FFF0B3', desc: 'Relatos de sobreviventes, bombeiros e moradores afetados pelo desastre de Chernobyl.' },
+{ id: 'b3', type: 'livro', title: 'Madame Curie', author: 'Eve Curie', year: 1937, color: '#F4C2D7', desc: 'Biografia de Marie Curie, com sua trajetória científica e pessoal.' },
+{ id: 'b4', type: 'livro', title: 'Oppenheimer', author: 'Kai Bird e Martin J. Sherwin', year: 2005, color: '#FFF0B3', desc: 'Biografia de J. Robert Oppenheimer e do Projeto Manhattan.' },
+{ id: 'f1', type: 'filme', title: 'A Síndrome da China', author: 'James Bridges', year: 1979, color: '#FFF0B3', desc: 'Suspense sobre falhas de segurança e encobrimento em uma usina nuclear.' },
+{ id: 'f2', type: 'filme', title: 'Silkwood – O Retrato de uma Coragem', author: 'Mike Nichols', year: 1983, color: '#F4C2D7', desc: 'Baseado em fatos reais sobre uma funcionária que denuncia irregularidades e exposição à radiação.' },
+{ id: 'f3', type: 'filme', title: 'Pandora', author: 'Kim Byung-woo', year: 2016, color: '#FFF0B3', desc: 'Produção sul-coreana sobre um terremoto que causa danos críticos em uma usina nuclear.' },
+{ id: 'f4', type: 'filme', title: 'Oppenheimer', author: 'Christopher Nolan', year: 2023, color: '#F4C2D7', desc: 'Cinebiografia sobre J. Robert Oppenheimer e a bomba atômica.' },
+{ id: 'd1', type: 'doc', title: 'Nuclear Now', author: 'Oliver Stone', year: 2022, color: '#FFF0B3', desc: 'Documentário com argumentos favoráveis à energia nuclear na transição energética.' },
+{ id: 'd2', type: 'doc', title: 'Reação Nuclear', author: 'Série documental', year: 2022, color: '#F4C2D7', desc: 'Minissérie documental sobre o acidente de Three Mile Island, nos EUA. Formato de série, com relatos e reconstituições.' },
+{ id: 'd3', type: 'doc', title: 'Césio 137 – O Pesadelo de Goiânia', author: 'Produção brasileira', year: 1990, color: '#FFF0B3', desc: 'Documentário brasileiro sobre o acidente radiológico de Goiânia.' }
+];
+var typeLabel = { livro: 'Livro', filme: 'Filme (dramatizado)', doc: 'Documentário / minissérie documental' };
+var typeMeta = { livro: 'Livro', filme: 'Filme dramatizado', doc: 'Documentário' };
+var currentTab = 'livros';
+var tabMap = { livros: 'livro', filmes: 'filme', docs: 'doc' };
+
+function coverSVG(color, seed) {
+return '<svg viewBox="0 0 200 150" aria-hidden="true" preserveAspectRatio="xMidYMid slice">' +
+'<rect width="200" height="150" fill="' + color + '" opacity="0.55"/>' +
+'<circle cx="' + (60 + seed * 7 % 60) + '" cy="70" r="36" fill="none" stroke="#55434A" stroke-width="1.2" opacity="0.6"/>' +
+'<ellipse cx="' + (60 + seed * 7 % 60) + '" cy="70" rx="36" ry="12" fill="none" stroke="#d94f7e" stroke-width="1.6"/>' +
+'<ellipse cx="' + (60 + seed * 7 % 60) + '" cy="70" rx="36" ry="12" fill="none" stroke="#d94f7e" stroke-width="1.6" transform="rotate(60 ' + (60 + seed * 7 % 60) + ' 70)"/>' +
+'<circle cx="' + (60 + seed * 7 % 60) + '" cy="70" r="4" fill="#55434A"/>' +
+'<rect x="120" y="40" width="50" height="6" rx="3" fill="#ffffff" opacity="0.8"/>' +
+'<rect x="120" y="54" width="36" height="6" rx="3" fill="#ffffff" opacity="0.6"/>' +
+'<rect x="120" y="68" width="44" height="6" rx="3" fill="#ffffff" opacity="0.5"/>' +
+'</svg>';
+}
+
+var libSearch = document.getElementById('libSearch');
+var libYear = document.getElementById('libYear');
+var libPanel = document.getElementById('libPanel');
+var libCount = document.getElementById('libCount');
+var libDialog = document.getElementById('libDialog');
+
+var years = [];
+books.forEach(function (b) { if (years.indexOf(b.year) === -1) years.push(b.year); });
+years.sort(function (a, b) { return b - a; });
+years.forEach(function (y) {
+var o = document.createElement('option');
+o.value = y; o.textContent = y;
+libYear.appendChild(o);
+});
+
+function renderLib() {
+var type = tabMap[currentTab];
+var q = libSearch.value.trim().toLowerCase();
+var y = libYear.value;
+var items = books.filter(function (b) {
+if (b.type !== type) return false;
+if (y && String(b.year) !== y) return false;
+if (q && (b.title.toLowerCase().indexOf(q) === -1 && b.author.toLowerCase().indexOf(q) === -1)) return false;
+return true;
+});
+libCount.textContent = items.length + (items.length === 1 ? ' item encontrado' : ' itens encontrados');
+if (!items.length) {
+libPanel.innerHTML = '<p class="lib-empty">Nenhum item corresponde aos filtros. Ajuste a busca ou o ano.</p>';
+return;
+}
+libPanel.innerHTML = items.map(function (b, i) {
+var label = b.type === 'livro' ? 'Autor' : (b.type === 'filme' ? 'Direção' : 'Direção / produção');
+return '<article class="card-soft lib-card reveal in">' +
+'<div class="lib-cover">' + coverSVG(b.color, i + 1) + '</div>' +
+'<div class="lib-body">' +
+'<span class="lib-type">' + typeMeta[b.type] + '</span>' +
+'<h3>' + b.title + '</h3>' +
+'<p class="lib-meta">' + b.year + ' • ' + label + ': ' + b.author + '</p>' +
+'<button class="btn-ghost" data-id="' + b.id + '">Saiba mais</button>' +
+'</div></article>';
+}).join('');
+libPanel.querySelectorAll('button[data-id]').forEach(function (btn) {
+btn.addEventListener('click', function () { openLib(btn.getAttribute('data-id')); });
+});
+}
+
+function openLib(id) {
+var b = books.filter(function (x) { return x.id === id; })[0];
+if (!b) return;
+document.getElementById('libDialogTitle').textContent = b.title;
+document.getElementById('libDialogMeta').textContent = b.year + ' • ' + b.author;
+document.getElementById('libDialogType').innerHTML = '<span class="badge-chip">' + typeLabel[b.type] + '</span>';
+document.getElementById('libDialogDesc').textContent = b.desc;
+libDialog.showModal();
+}
+
+document.querySelectorAll('.lib-tab').forEach(function (tab) {
+tab.addEventListener('click', function () {
+document.querySelectorAll('.lib-tab').forEach(function (t) { t.setAttribute('aria-selected', 'false'); });
+tab.setAttribute('aria-selected', 'true');
+currentTab = tab.getAttribute('data-tab');
+renderLib();
+});
+});
+libSearch.addEventListener('input', renderLib);
+libYear.addEventListener('change', renderLib);
+renderLib();
+
+// Quiz
+var questions = [
+{ q: 'O que é energia nuclear?', o: ['Energia liberada em transformações do núcleo atômico', 'Energia produzida pela queima de carvão mineral', 'Energia captada apenas do vento e do sol', 'Energia armazenada em baterias químicas'], a: 0, e: 'A energia nuclear é liberada em transformações do núcleo do átomo, como a fissão.' },
+{ q: 'O que é a fissão nuclear?', o: ['A união de dois núcleos leves em um núcleo mais leve', 'A divisão de um núcleo pesado em núcleos menores, liberando energia', 'A queima de gases em alta temperatura', 'O resfriamento de um reator'], a: 1, e: 'Na fissão, um núcleo pesado, como o urânio-235, se divide em núcleos menores e libera energia.' },
+{ q: 'Qual é o combustível mais usado nas usinas nucleares convencionais?', o: ['Carvão', 'Petróleo', 'Urânio', 'Gás natural'], a: 2, e: 'O urânio é o combustível mais usado, pois seus átomos se fissionam com facilidade.' },
+{ q: 'Qual é uma vantagem ambiental da energia nuclear na geração de eletricidade?', o: ['Libera grande quantidade de gases de efeito estufa', 'Não queima combustíveis fósseis e emite pouco carbono', 'Depende de queima de madeira', 'Não produz eletricidade'], a: 1, e: 'A geração não queima combustíveis fósseis e libera quantidades pequenas de gases de efeito estufa.' },
+{ q: 'Qual é um desafio associado aos resíduos radioativos?', o: ['Eles se decompõem em poucas horas', 'Exigem armazenamento seguro e monitoramento por longos períodos', 'Podem ser descartados em qualquer rio', 'Não têm radioatividade'], a: 1, e: 'Os rejeitos precisam de armazenamento seguro e monitoramento por muito tempo.' },
+{ q: 'Qual acidente nuclear ocorreu na Ucrânia em 1986?', o: ['Three Mile Island', 'Fukushima', 'Chernobyl', 'Goiânia'], a: 2, e: 'O acidente de Chernobyl ocorreu em 1986, na antiga União Soviética, atual Ucrânia.' },
+{ q: 'Onde foi inaugurada a primeira usina nuclear comercial, em 1954?', o: ['Em Angra dos Reis, no Brasil', 'Em Obninsk, na antiga União Soviética', 'Na França', 'Nos Estados Unidos'], a: 1, e: 'A primeira usina nuclear comercial entrou em operação em 1954, em Obninsk.' },
+{ q: 'Além da eletricidade, a tecnologia nuclear é aplicada em qual área?', o: ['Apenas na construção civil', 'Medicina, agricultura, indústria e propulsão de embarcações', 'Somente na culinária', 'Exclusivamente na produção de papel'], a: 1, e: 'Há aplicações na medicina, agricultura, indústria e na propulsão de embarcações.' }
+];
+var qIndex = 0;
+var answers = new Array(questions.length).fill(null);
+var quizBody = document.getElementById('quizBody');
+var qCounter = document.getElementById('qCounter');
+var qScoreEl = document.getElementById('qScore');
+var qProgress = document.getElementById('qProgress');
+var qProgressTrack = document.getElementById('qProgressTrack');
+var qPrev = document.getElementById('qPrev');
+var qNext = document.getElementById('qNext');
+var letters = ['A', 'B', 'C', 'D'];
+
+function score() {
+var s = 0;
+answers.forEach(function (ans, i) { if (ans === questions[i].a) s++; });
+return s;
+}
+function answeredCount() {
+return answers.filter(function (x) { return x !== null; }).length;
+}
+
+function renderQuiz() {
+var finished = answeredCount() === questions.length;
+qProgress.style.width = Math.round((answeredCount() / questions.length) * 100) + '%';
+qProgressTrack.setAttribute('aria-valuenow', String(Math.round((answeredCount() / questions.length) * 100)));
+qScoreEl.textContent = 'Acertos: ' + score();
+
+if (finished && qIndex === questions.length) {
+renderResult();
+return;
+}
+var item = questions[qIndex];
+qCounter.textContent = 'Pergunta ' + (qIndex + 1) + ' de ' + questions.length;
+var chosen = answers[qIndex];
+var html = '<h3 class="q-title">' + item.q + '</h3><div class="options" role="radiogroup">';
+item.o.forEach(function (opt, i) {
+var cls = 'opt';
+var disabled = chosen !== null ? ' disabled' : '';
+if (chosen !== null) {
+if (i === item.a) cls += ' correct';
+else if (i === chosen) cls += ' wrong';
+}
+html += '<button class="' + cls + '" data-i="' + i + '"' + disabled + '><span class="letter">' + letters[i] + '</span><span>' + opt + '</span></button>';
+});
+html += '</div>';
+if (chosen !== null) {
+var ok = chosen === item.a;
+html += '<div class="feedback show ' + (ok ? 'ok' : 'bad') + '" role="status"><strong>' + (ok ? 'Correta!' : 'Incorreta.') + '</strong> ' + item.e + '</div>';
+}
+quizBody.innerHTML = html;
+quizBody.querySelectorAll('.opt').forEach(function (btn) {
+btn.addEventListener('click', function () {
+answers[qIndex] = parseInt(btn.getAttribute('data-i'), 10);
+renderQuiz();
+qNext.disabled = false;
+});
+});
+qPrev.disabled = qIndex === 0;
+qNext.disabled = answers[qIndex] === null;
+qNext.textContent = qIndex === questions.length - 1 ? 'Ver resultado →' : 'Próxima →';
+}
+
+function renderResult() {
+var s = score();
+var pct = Math.round((s / questions.length) * 100);
+var msg;
+if (pct === 100) msg = 'Excelente! Você domina o tema.';
+else if (pct >= 75) msg = 'Muito bem! Você conhece bem a energia nuclear.';
+else if (pct >= 50) msg = 'Bom trabalho! Revise as partes em que errou.';
+else msg = 'Continue estudando! Releia a seção “O que é energia nuclear?”.';
+quizBody.innerHTML =
+'<div class="score-box">' +
+'<div class="score-big">' + s + '/' + questions.length + '</div>' +
+'<p class="muted" style="margin:6px 0 0;">Aproveitamento de ' + pct + '%</p>' +
+'<p class="score-msg">' + msg + '</p>' +
+'</div>';
+qCounter.textContent = 'Quiz concluído';
+qNext.disabled = true;
+qNext.textContent = 'Próxima →';
+qPrev.disabled = false;
+}
+
+qNext.addEventListener('click', function () {
+if (answers[qIndex] === null) return;
+if (qIndex < questions.length - 1) {
+qIndex++;
+renderQuiz();
+} else {
+qIndex = questions.length;
+renderQuiz();
+}
+});
+qPrev.addEventListener('click', function () {
+if (qIndex === questions.length) { qIndex = questions.length - 1; renderQuiz(); return; }
+if (qIndex > 0) { qIndex--; renderQuiz(); }
+});
+
+renderQuiz();
+
+// Restart quiz via shell toast-confirmed reset button added dynamically
+var resetBtn = document.createElement('button');
+resetBtn.className = 'btn-ghost';
+resetBtn.id = 'qReset';
+resetBtn.textContent = 'Refazer quiz';
+resetBtn.style.marginTop = '18px';
+document.querySelector('#quizCard').appendChild(resetBtn);
+resetBtn.addEventListener('click', function () {
+answers = new Array(questions.length).fill(null);
+qIndex = 0;
+renderQuiz();
+if (window.skipUI && window.skipUI.toast) window.skipUI.toast('Quiz reiniciado. Boa sorte!', { type: 'success' });
+});
+
+// Back to top and copy-link toast
+document.getElementById('btnTop').addEventListener('click', function () {
+document.getElementById('inicio').scrollIntoView({ behavior: 'smooth', block: 'start' });
+if (window.skipUI && window.skipUI.toast) window.skipUI.toast('Você voltou ao início da página.');
+});
+document.querySelectorAll('[data-scroll]').forEach(function (el) {
+el.addEventListener('click', function () {
+if (window.skipUI && window.skipUI.toast) window.skipUI.toast('Rolando para a próxima seção.');
+});
+});
+})();
+</script>
+</body>
+</html>
